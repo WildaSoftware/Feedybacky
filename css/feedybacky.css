@@ -1,0 +1,123 @@
+#feedybacky-container-minified {
+	display: block;
+	position: fixed;
+	border: 1px solid black;
+	top: 100px;
+	right: 0px;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	background-color: white;
+	z-index: 10000;
+}
+
+#feedybacky-container-minified div {
+	width: 100%;
+	height: 100%;
+	background-image: url(../img/icon.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 95%;
+}
+
+#feedybacky-alert-container {
+	display: none;
+	position: fixed;
+	border-radius: 10px;
+	top: 50px;
+	right: 0;
+	padding: 10px;
+	z-index: 10000;
+
+	-webkit-animation-name: show; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+	animation-name: show;
+	animation-duration: 1s;
+}
+
+.feedybacky-alert-container-success {
+    background-color: #d4edda;
+    border-color: #d4edda;
+    color: #155724;
+}
+
+.feedybacky-alert-container-failure {
+	background-color: #f8d7da;
+	border-color: #f8d7da;
+	color: #721c24;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes show {
+	from {right: -500px}
+}
+
+/* Standard syntax */
+@keyframes show {
+	from {right: -500px}
+}
+
+#feedybacky-container-extended {
+	display: none;
+	border: 1px solid black;
+	position: absolute;
+	top: 100px;
+	right: 0px;
+	width: 25%;
+	min-width: 200px;
+	padding: 5px 10px 10px;
+	background-color: white;
+	z-index: 10000;
+	line-height: 1.5;
+}
+
+#feedybacky-container-title {
+	font-size: 1.2em; 
+	display: inline-block; 
+	width: 75%; 
+	font-weight: bold;
+}
+
+#feedybacky-container-hide-button {
+	text-align: right; 
+	cursor: pointer; 
+	font-size: 1.5em; 
+	display: inline-block; 
+	width: 20%;
+}
+
+#feedybacky-form-description {
+	display: block; 
+	margin: 5px 0; 
+	width: 100%; 
+	overflow: auto; 
+	resize: none;
+	height: 4em;
+}
+
+.feedybacky-container-checkbox {
+	display: inline-block;
+	margin-bottom: 0.5rem;
+}
+
+#feedybacky-container-additional-description {
+	text-align: justify;
+	margin-bottom: 10px;
+}
+
+#feedybacky-form input[type="checkbox"] {
+	margin-right: 5px;
+}
+
+#feedybacky-form-submit-button {
+	display: block; 
+	margin-left: auto; 
+	margin-right: auto; 
+	font-size: 1.2em; 
+	padding: 5px 10px;
+}
+
+#feedybacky-container-powered {
+	font-size: 0.9em; 
+	margin-top: 10px;
+}
