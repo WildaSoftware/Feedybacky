@@ -6,6 +6,11 @@
   "scripts": {
     "gulp": "gulp"
   },
+  "keywords": [
+    "feedback",
+    "frontend",
+	"request"
+  ],
   "author": "Wilda Software Sp. z o.o.",
   "license": "MIT",
   "devDependencies": {

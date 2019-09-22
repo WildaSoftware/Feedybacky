@@ -11,6 +11,10 @@ Feedybacky uses `html2canvas` library by Niklas von Hertzen.
 
 If you just want to use Feedybacky, you can copy the ZIP archive from the repository and unzip to the destinated directory. It is important to have all subfolders (`css`, `js` etc.) next to each other in the same directory.
 
+Of course, you can also install Feedybacky as NPM package:
+
+	npm install --save feedybacky
+
 If you want to modify or build Feedybacky by yourself, you should install NPM dependencies by running `npm install` command, install `gulp-cli` globally (`npm install -g gulp-cli`) and run `gulp` in Feedybacky directory `npm install gulp`. Afterwards, you can copy whole following directories to the destinated folder: `css`, `dependencies`, `i18n`, `img`, `js`.
 
 ### How to include Feedybacky in my web page? ###
@@ -21,7 +25,7 @@ Firstly, you have to create a DOM element anywhere on your web page:
 	
 Secondly, Feedybacky script should be included and its object initialized:
 
-	<script type="text/javascript" src="feedybacky.min.js"></script>
+	<script type="text/javascript" src="js/feedybacky.min.js"></script>
 	//...
 	var feedybacky = new Feedybacky('feedybacky-container', {
 		onSubmitUrl: url
