@@ -6,20 +6,19 @@ const rename = require('gulp-rename');
 const minify = require('gulp-minify');
 
 gulp.task('cssFile', function() {
-	gulp.src('./css/feedybacky.css')
+	return gulp.src('./css/feedybacky.css')
 		.pipe(csso())
 		.pipe(rename('feedybacky.min.css'))
-		.pipe(gulp.dest('./css'))
+		.pipe(gulp.dest('./dist/css'))
 });
 
 gulp.task('jsFile', function() { 
-	gulp.src('./js/feedybacky.js')
+	return gulp.src('./js/feedybacky.js')
 		.pipe(minify({
-	        ext: {
-	            min: '.min.js'
-	        }
-	    }))
-		.pipe(gulp.dest('./js'))
+			noSource: true,
+			ext: '.min.js'
+		}))
+		.pipe(gulp.dest('./dist/js'))
 });
 
 const tasks = ['cssFile', 'jsFile'];
