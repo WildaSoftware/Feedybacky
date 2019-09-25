@@ -88,7 +88,7 @@ import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
 ```html
 <div id="feedybacky-container"></div>
 ```
-2. Import and init Feedybacky and import dependencies
+2. Import and init Feedybacky and import dependencies into `App.js`
 ```ts
 import { Feedybacky } from 'feedybacky';
 import 'feedybacky/css/feedybacky.min.css';
