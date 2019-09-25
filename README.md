@@ -20,16 +20,50 @@ If you want to modify or build Feedybacky by yourself, you should install NPM de
 ### How to include Feedybacky in my web page? ###
 
 Firstly, you have to create a DOM element anywhere on your web page:
-
-	<div id="feedybacky-container"></div>
-	
+```html
+<div id="feedybacky-container"></div>
+```	
 Secondly, Feedybacky script should be included and its object initialized:
-
-	<script type="text/javascript" src="js/feedybacky.min.js"></script>
+```javascript
+<script type="text/javascript" src="js/feedybacky.min.js"></script>
+//...
+var feedybacky = new Feedybacky('feedybacky-container', {
+	onSubmitUrl: url
+});
+```
+#### ANGULAR ####
+1. Add DOM element to your root `.html` template (outside `<app-root></app-root>`)
+```html
+<div id="feedybacky-container"></div>
+```
+2. Edit your `angular.json` file
+```json
+//...
+"build": {
 	//...
-	var feedybacky = new Feedybacky('feedybacky-container', {
+	{
+		"styles": [
+			//...
+			"node_modules/feedybacky/css/feedybacky.min.css"
+		],
+		"scripts": [
+			//...
+			"node_modules/feedybacky/dependencies/html2canvas/html2canvas.min.js"
+		]
+	}
+}
+```
+3. In your `app.component.ts` add
+```typescript
+import { Feedybacky } from 'feedybacky';
+
+export class AppComponent {
+	protected feedybacky = new Feedybacky('feedybacky-container', {
 		onSubmitUrl: url
 	});
+	//...
+}
+```
 
 ### Parameters ###
 
