@@ -5,19 +5,21 @@ Feedybacky
 
 Feedybacky is simple JS plugin for web pages which facilitates feedback system. It creates a sliding element on HTML page in which an user can provide a request (error, suggest, comment etc.) and send it in rapid and easy way. The special part of this process is the fact, that Feedybacky allows to attach a screenshot of the current page and additional information **automatically**. It includes i.a. current URL, user agent string and - of course - current datetime. In many situations, request's text provided by a user is not sufficient to reproduce e.g. an error - Feedybacky tries to solve that problem.
 
-Feedybacky uses `html2canvas` library by Niklas von Hertzen.
+Feedybacky uses `html2canvas` library created by Niklas von Hertzen.
 
 ### Installation ###
 
-If you just want to use Feedybacky, you can copy the ZIP archive from the repository and unzip to the destinated directory. It is important to have all subfolders (`css`, `js` etc.) next to each other in the same directory.
+If you just want to use Feedybacky, you can copy the ZIP archive from the repository and unzip to the destinated directory. It is important to have all subfolders (`css`, `js` etc.) next to each other in the same folder.
 
 Of course, you can also install Feedybacky as NPM package:
 
 	npm install --save feedybacky
 
-If you want to modify or build Feedybacky by yourself, you should install NPM dependencies by running `npm install` command, install `gulp-cli` globally (`npm install -g gulp-cli`) and run `gulp` in Feedybacky directory `npm install gulp`. Afterwards, you can copy whole following directories to the destinated folder: `css`, `dependencies`, `i18n`, `img`, `js`.
+If you want to modify or build Feedybacky by yourself, you should install NPM dependencies by running `npm install` command, install `gulp-cli` globally (`npm install -g gulp-cli`) and run `gulp` in Feedybacky directory (`npm install gulp`). Afterwards, you can copy following directories to the destinated folder: `css`, `dependencies`, `i18n`, `img`, `js`.
 
 ### How to include Feedybacky in my web page? ###
+
+#### Standard way ####
 
 Firstly, you have to create a DOM element anywhere on your web page:
 ```html
@@ -31,12 +33,13 @@ var feedybacky = new Feedybacky('feedybacky-container', {
 	onSubmitUrl: url
 });
 ```
-#### ANGULAR ####
-1. Add DOM element to your root `.html` template (outside `<app-root></app-root>`)
+#### Angular ####
+
+1. Add a DOM element to your root `.html` template (outside `<app-root></app-root>`):
 ```html
 <div id="feedybacky-container"></div>
 ```
-2. Edit your `angular.json` file
+2. Edit your `angular.json` file:
 ```json
 //...
 "build": {
@@ -53,7 +56,7 @@ var feedybacky = new Feedybacky('feedybacky-container', {
 	}
 }
 ```
-3. In your `app.component.ts` add
+3. In your `app.component.ts` add:
 ```typescript
 import { Feedybacky } from 'feedybacky';
 
@@ -64,27 +67,27 @@ export class AppComponent {
 	//...
 }
 ```
-#### VUE ####
-1. Add DOM element to `public/index.html`
+#### Vue.js ####
+1. Add a DOM element to `public/index.html`:
 ```html
 <div id="feedybacky-container"></div>
 ```
-2. Import Feedybacky into `App.vue`
+2. Import Feedybacky into `App.vue`:
 ```ts
 import { Feedybacky } from 'feedybacky'
 
 const feedybacky = new Feedybacky('feedybacky-container', {
-  onSubmitUrl: '/'
+  onSubmitUrl: url
 });
 ```
-3. Import additional styles and dependencies in `main.js`
+3. Import additional styles and dependencies in `main.js`:
 ```ts
 import 'feedybacky/css/feedybacky.min.css';
 import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
 ```
 
-#### REACT ####
-1. Add DOM element to `public/index.html`
+#### React ####
+1. Add DOM element to `public/index.html`:
 ```html
 <div id="feedybacky-container"></div>
 ```
@@ -95,7 +98,7 @@ import 'feedybacky/css/feedybacky.min.css';
 import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
 
 new Feedybacky('feedybacky-container', {
-  onSubmitUrl: '/'
+  onSubmitUrl: url
 })
 ```
 
