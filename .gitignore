@@ -1,5 +1,4 @@
 .vscode/
 node_modules
 package-lock.json
-js/feedybacky.min.js
-css/feedybacky.min.css
+.DS_Store

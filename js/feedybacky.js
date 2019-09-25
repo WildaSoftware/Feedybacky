@@ -1,5 +1,4 @@
 const feedybackyScriptName = 'feedybacky.min.js';
-
 class Feedybacky {
 
     constructor(id, params) {
@@ -56,16 +55,26 @@ class Feedybacky {
         this.params.language = this.params.language || this.defaultVars.language;
 
         this.defaultVars.texts = await (async () => {
-        	let json = null;
+            let json = null;
+            if(this.basePath) {
+                await this.loadJsonFile(`${this.basePath}/i18n/${this.params.language}.json`, (data) => {
+                    json = data;
+                }, async (err) => {
+                    console.warn(`Feedybacky cannot load default language pack for ${this.params.language}. The default language pack will be loaded.`);
+                    await this.loadJsonFile(`${this.basePath}/i18n/${this.defaultVars.language}.json`, data => {
+                        json = data;
+                    });
+                });
+
+            } else {
+                try {
+                    json = require(`../i18n/${this.params.language}.json`);
+                } catch (_) {
+                    console.warn(`Feedybacky cannot load default language pack for ${this.params.language}. The default language pack will be loaded.`);
+                    json = require(`../i18n/${this.defaultVars.language}.json`);
+                }
+            }
         	
-        	await this.loadJsonFile(`${this.basePath}/i18n/${this.params.language}.json`, (data) => {
-        		json = data;
-        	}, async (err) => {
-        		console.warn(`Feedybacky cannot load default language pack for ${this.params.language}. The default language pack will be loaded.`);
-        		await this.loadJsonFile(`${this.basePath}/i18n/${this.defaultVars.language}.json`, data => {
-        			json = data;
-        		});
-        	});
         	return json;
         })();
         this.params.texts = this.params.texts || {};
@@ -229,15 +238,17 @@ class Feedybacky {
                 break;
             }
         }
+        if(this.basePath) {
+            this.importCssFile(`${this.basePath}/css/feedybacky.min.css`);
 
-        this.importCssFile(`${this.basePath}/css/feedybacky.min.css`);
-        this.importJsFile(`${this.basePath}/dependencies/html2canvas/html2canvas.min.js`);
+            this.importJsFile(`${this.basePath}/dependencies/html2canvas/html2canvas.min.js`);
+        }
     }
 
     importCssFile(url) {
-    	const head = document.getElementsByTagName('head')[0];
-
+        const head = document.getElementsByTagName('head')[0];
         let stylesheet = document.createElement('link');
+
         stylesheet.href = url;
         stylesheet.type = 'text/css';
         stylesheet.rel = 'stylesheet';
@@ -259,7 +270,9 @@ class Feedybacky {
             success(res);
         } 
         catch (e) {
-            error(e);
+            if(error) {
+                error(e);
+            }
         }
     }
 }
