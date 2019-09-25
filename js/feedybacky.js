@@ -66,7 +66,8 @@ class Feedybacky {
                     });
                 });
 
-            } else {
+            } 
+			else {
                 try {
                     json = require(`../i18n/${this.params.language}.json`);
                 } catch (_) {
@@ -277,4 +278,6 @@ class Feedybacky {
     }
 }
 
-module.exports.Feedybacky = Feedybacky;
+if(typeof module !== 'undefined') {
+	module.exports.Feedybacky = Feedybacky;
+}
