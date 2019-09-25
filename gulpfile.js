@@ -9,7 +9,7 @@ gulp.task('cssFile', function() {
 	return gulp.src('./css/feedybacky.css')
 		.pipe(csso())
 		.pipe(rename('feedybacky.min.css'))
-		.pipe(gulp.dest('./dist/css'))
+		.pipe(gulp.dest('./css'))
 });
 
 gulp.task('jsFile', function() { 
@@ -18,7 +18,7 @@ gulp.task('jsFile', function() {
 			noSource: true,
 			ext: '.min.js'
 		}))
-		.pipe(gulp.dest('./dist/js'))
+		.pipe(gulp.dest('./js'))
 });
 
 const tasks = ['cssFile', 'jsFile'];
