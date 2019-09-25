@@ -64,6 +64,40 @@ export class AppComponent {
 	//...
 }
 ```
+#### VUE ####
+1. Add DOM element to `public/index.html`
+```html
+<div id="feedybacky-container"></div>
+```
+2. Import Feedybacky into `App.vue`
+```ts
+import { Feedybacky } from 'feedybacky'
+
+const feedybacky = new Feedybacky('feedybacky-container', {
+  onSubmitUrl: '/'
+});
+```
+3. Import additional styles and dependencies in `main.js`
+```ts
+import 'feedybacky/css/feedybacky.min.css';
+import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
+```
+
+#### REACT ####
+1. Add DOM element to `public/index.html`
+```html
+<div id="feedybacky-container"></div>
+```
+2. Import and init Feedybacky and import dependencies
+```ts
+import { Feedybacky } from 'feedybacky';
+import 'feedybacky/css/feedybacky.min.css';
+import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
+
+new Feedybacky('feedybacky-container', {
+  onSubmitUrl: '/'
+})
+```
 
 ### Parameters ###
 
@@ -109,4 +143,4 @@ Feedybacky was created and is maintained by programmers of [Wilda Software](http
 ### Licence ###
 
 Feedybacky is licenced under MIT licence.
-	
+
