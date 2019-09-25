@@ -223,7 +223,7 @@ class Feedybacky {
             let length = src.length;
 
             let parts = src.split('/');
-
+            console.table(parts);
             if(parts[parts.length - 1].includes(feedybackyScriptName)) {
                 this.basePath = parts.slice(0, -2).join('/');
                 break;
