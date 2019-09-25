@@ -1,16 +1,15 @@
 {
-  "name": "@wmorawski/feedybacky",
+  "name": "feedybacky",
   "version": "1.0.5",
   "description": "Feedybacky - JS plugin to facilitate feedback requests from users on web pages.",
   "main": "",
   "scripts": {
-    "gulp": "gulp",
-    "build": "npm run gulp"
+    "gulp": "gulp"
   },
   "keywords": [
     "feedback",
     "frontend",
-    "request"
+	"request"
   ],
   "author": "Wilda Software Sp. z o.o.",
   "license": "MIT",
@@ -19,13 +18,5 @@
     "gulp-csso": "^3.0.1",
     "gulp-minify": "^3.1.0",
     "gulp-rename": "^1.4.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wmorawski/Feedybacky.git"
-  },
-  "bugs": {
-    "url": "https://github.com/wmorawski/Feedybacky/issues"
-  },
-  "homepage": "https://github.com/wmorawski/Feedybacky#readme"
+  }
 }
