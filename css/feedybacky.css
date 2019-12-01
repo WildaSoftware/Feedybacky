@@ -121,3 +121,9 @@
 	font-size: 0.9em; 
 	margin-top: 10px;
 }
+
+.feedybacky-error-message {
+	color: #ba222f;
+	font-weight: bold;
+	font-size: 1.2em;
+}

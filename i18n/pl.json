@@ -10,5 +10,6 @@
     "requestSuccess": "Zgłoszenie wysłane pomyślnie.",
     "requestFail": "Zgłoszenie nie zostało wysłane.",
     "error404": "Podano zły URL.",
-    "error500": "Wewnętrzny błąd serwera."
+    "error500": "Wewnętrzny błąd serwera.",
+    "descriptionErrorEmpty": "Opis zgłoszenia jest wymagany!"
 }

@@ -10,5 +10,6 @@
     "requestSuccess": "Report sent successfully.",
     "requestFail": "Report not sent.",
     "error404": "Wrong URL provided.",
-    "error500": "Internal server error."
+    "error500": "Internal server error.",
+    "descriptionErrorEmpty": "Request's description is required!"
 }

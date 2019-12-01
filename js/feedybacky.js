@@ -23,8 +23,12 @@ class Feedybacky {
             if(this.params.onSubmitUrl) {
                 document.getElementById('feedybacky-form').addEventListener('submit', e => {
                     e.preventDefault();
-                    this.prepareAndSendRequest();
-                    this.showMinimalContainer();
+                    
+                    this.clearErrors();
+                    if(this.validateForm()) {
+                    	this.prepareAndSendRequest();
+                    	this.showMinimalContainer();
+                    }
                 });
             }
     
@@ -117,6 +121,7 @@ class Feedybacky {
 			</div>
 			<form id="feedybacky-form">
 				<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" maxlength="" aria-required="true"></textarea>
+				<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
 				<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>
 				<label class="feedybacky-container-checkbox"><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true"/>${this.params.texts.screenshot}</label>
 				<label class="feedybacky-container-checkbox"><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true"/>${this.params.texts.metadata}</label>
@@ -135,6 +140,26 @@ class Feedybacky {
         this.alertContainer.id = 'feedybacky-alert-container';
         this.alertContainer.setAttribute('data-html2canvas-ignore', true);
         this.container.appendChild(this.alertContainer);
+    }
+	
+	clearErrors() {
+    	let errorMessageContainers = document.getElementsByClassName('feedybacky-error-message');
+    	
+    	for(let i = 0; i < errorMessageContainers.length; ++i) {
+    		errorMessageContainers[i].innerText = '';
+    	}
+    }
+    
+    validateForm() {
+    	let descriptionInput = document.getElementById('feedybacky-form-description');
+    	let isValidated = true;
+    	
+    	if(!descriptionInput.value) {
+    		document.getElementById('feedybacky-form-description-error-message').innerText = this.params.texts.descriptionErrorEmpty;
+    		isValidated = false;
+    	}
+    	
+    	return isValidated;
     }
     
     prepareAndSendRequest() {
