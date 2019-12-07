@@ -110,7 +110,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 
 `onSubmit` - callback function to invoke after sending a request. Either `onSubmit` or `onSubmitUrl` parameter must be set. This parameter is for advanced usage only - in most cases `onSubmitUrl` would be the better choice.
 
-`onSubmitUrl` - URL with POST web service to receive information about a sent request. The resulted JSON object can consists of following fields:
+`onSubmitUrl` - URL with POST web service to receive information about a sent request. The resulted JSON object can consist of following fields:
 
 * **message** - text provided by the user.
 * **timestamp** - date and time of the request creation.
@@ -138,6 +138,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **requestSuccess** - message visible after successful POST request sent.
 * **requestFail** - message visible after unsuccessful POST request sent.
 * **powered** - message on bottom of the plugin screen.
+
+`extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
 ### Authors ###
 
