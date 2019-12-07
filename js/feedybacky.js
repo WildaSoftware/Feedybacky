@@ -6,7 +6,8 @@ class Feedybacky {
         this.basePath = null;
         this.consoleErrors = [];
         this.importDependencies();
-        this.container = document.getElementById(id);
+        this.container = document.getElementById(id);		
+		this.extraInfoFunction = params.extraInfo || null;
     	
     	this.loadMessages().then(() => {
             this.initMinifiedContainer();
@@ -185,6 +186,10 @@ class Feedybacky {
             	payload['orientation'] = screen.orientation.type;
         	}
         }
+		
+		if(this.extraInfoFunction) {
+			payload = Object.assign(payload, this.extraInfoFunction());
+		}
 
         if(document.getElementById('feedybacky-form-screenshot-allowed').checked) {
             html2canvas(document.body, {
