@@ -188,7 +188,7 @@ class Feedybacky {
         }
 		
 		if(this.extraInfoFunction) {
-			payload = Object.assign(payload, this.extraInfoFunction());
+			payload['extraInfo'] = this.extraInfoFunction();
 		}
 
         if(document.getElementById('feedybacky-form-screenshot-allowed').checked) {

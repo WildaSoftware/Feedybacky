@@ -125,6 +125,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **innerSize** - size of visible frame (result of `window.innerWidth` and `window.innerHeight`). Available only if the user accepted sending metadata information.
 * **colorDepth** - depth of the pixel on the screen (result of `screen.colorDepth`). Available only if the user accepted sending metadata information.
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
+* **extraInfo** - JSON object with extra parameters passed by the callback function.
 
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
