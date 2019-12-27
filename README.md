@@ -125,7 +125,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **innerSize** - size of visible frame (result of `window.innerWidth` and `window.innerHeight`). Available only if the user accepted sending metadata information.
 * **colorDepth** - depth of the pixel on the screen (result of `screen.colorDepth`). Available only if the user accepted sending metadata information.
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
-* **extraInfo** - JSON object with extra parameters passed by the callback function.
+* **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
+* **email** - e-mail address provided by the user if available (the appropriate field is visible).
 
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
@@ -139,8 +140,19 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **requestSuccess** - message visible after successful POST request sent.
 * **requestFail** - message visible after unsuccessful POST request sent.
 * **powered** - message on bottom of the plugin screen.
+* **error404** - message after a situation where an 404 error occurred.
+* **error500** - message after a situation where an 500 error occurred.
+* **descriptionErrorEmpty** - error message for the empty description field.
+* **email** - label before the e-mail address field.
+* **emailErrorEmpty** - error message for the empty e-mail address field.
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
+
+`emailField` - optional parameter indicating if e-mail address field should be visible. If it is visible, it is also required. Default value: `false`.
+
+`screenshotField ` - optional parameter for defining behaviour of the plugin during processing a screenshot. The default value is `"visible"` and it means that the checkbox is visible and a user can select if they would like to send a screenshot or not. The other possible values are `"autoEnable"` (the checkbox is not visible and the screenshot is sent automatically) and `"autoDisable"` (the checkbox is not visible and the screenshot is ignored).
+
+`metadataField` - optional parameter for defining behaviours of the plugin during processing metadata. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above.
 
 ### Authors ###
 

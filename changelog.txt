@@ -1,3 +1,9 @@
+Version 1.2 (2019-12-27)
+========================
+
+1. E-mail address field can be added to the form.
+2. Checkboxes for screenshot and metadata can be hidden and automatically passed or ignored.
+
 Version 1.1 (2019-12-07)
 ========================
 
