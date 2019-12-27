@@ -22,6 +22,8 @@ class Feedybacky {
         if(!this.params.metadataField || !checkboxOptions.includes(this.params.metadataField)) {
         	this.params.metadataField = checkboxVisibleOption;
         }
+		
+		this.params.emailField = this.params.emailField || false;
     	
     	this.loadMessages().then(() => {
             this.initMinifiedContainer();
@@ -126,6 +128,15 @@ class Feedybacky {
         this.extendedContainer.setAttribute('data-html2canvas-ignore', true);
         this.container.appendChild(this.extendedContainer);
 		
+		let emailInputHtml = '';
+        if(this.params.emailField) {
+        	emailInputHtml = `
+        		<div id="feedybacky-container-email-description">${this.params.texts.email}</div>
+        		<input id="feedybacky-form-email" form="feedybacky-form" name="email" aria-required="true"/>
+        		<div id="feedybacky-form-email-error-message" class="feedybacky-error-message"></div>
+        	`;
+        }
+		
 		let screenshotCheckboxHtml = '';
         if(this.params.screenshotField == checkboxVisibleOption) {
         	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true"/>${this.params.texts.screenshot}</label>`;
@@ -150,8 +161,9 @@ class Feedybacky {
 				${this.params.texts.description}
 			</div>
 			<form id="feedybacky-form">
-				<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" maxlength="" aria-required="true"></textarea>
+				<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true"></textarea>
 				<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
+				${emailInputHtml}
 				${additionalDataInformationHtml}
 				${screenshotCheckboxHtml}
 				${metadataCheckboxHtml}
@@ -182,10 +194,17 @@ class Feedybacky {
     
     validateForm() {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
+		let emailInput = document.getElementById('feedybacky-form-email');
+		
     	let isValidated = true;
     	
     	if(!descriptionInput.value) {
     		document.getElementById('feedybacky-form-description-error-message').innerText = this.params.texts.descriptionErrorEmpty;
+    		isValidated = false;
+    	}
+		
+		if(emailInput && !emailInput.value) {
+    		document.getElementById('feedybacky-form-email-error-message').innerText = this.params.texts.emailErrorEmpty;
     		isValidated = false;
     	}
     	
@@ -194,6 +213,7 @@ class Feedybacky {
     
     prepareAndSendRequest() {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
+		let emailInput = document.getElementById('feedybacky-form-email');
     	
         let payload = {
             message: descriptionInput.value,
@@ -201,6 +221,10 @@ class Feedybacky {
             url: window.location.href,
             errors: this.consoleErrors
         };
+		
+		if(emailInput) {
+        	payload['email'] = emailInput.value;
+        }
 		
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
         let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');

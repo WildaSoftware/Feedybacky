@@ -11,5 +11,7 @@
     "requestFail": "Zgłoszenie nie zostało wysłane.",
     "error404": "Podano zły URL.",
     "error500": "Wewnętrzny błąd serwera.",
-    "descriptionErrorEmpty": "Opis zgłoszenia jest wymagany!"
+    "descriptionErrorEmpty": "Opis zgłoszenia jest wymagany!",
+	"email": "Twój adres e-mail:",
+    "emailErrorEmpty": "Adres e-mail jest wymagany!"
 }

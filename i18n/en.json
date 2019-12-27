@@ -11,5 +11,7 @@
     "requestFail": "Report not sent.",
     "error404": "Wrong URL provided.",
     "error500": "Internal server error.",
-    "descriptionErrorEmpty": "Request's description is required!"
+    "descriptionErrorEmpty": "Request's description is required!",
+    "email": "Your e-mail address:",
+    "emailErrorEmpty": "E-mail address is required!"
 }
