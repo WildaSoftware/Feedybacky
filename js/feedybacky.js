@@ -1,4 +1,10 @@
 const feedybackyScriptName = 'feedybacky.min.js';
+
+const checkboxVisibleOption = 'visible';
+const checkboxAutoEnableOption = 'autoEnable';
+const checkboxAutoDisableOption = 'autoDisable';
+const checkboxOptions = [checkboxVisibleOption, checkboxAutoEnableOption, checkboxAutoDisableOption];
+
 class Feedybacky {
 
     constructor(id, params) {
@@ -8,6 +14,14 @@ class Feedybacky {
         this.importDependencies();
         this.container = document.getElementById(id);		
 		this.extraInfoFunction = params.extraInfo || null;
+		
+		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
+        	this.params.screenshotField = checkboxVisibleOption;
+        }
+        
+        if(!this.params.metadataField || !checkboxOptions.includes(this.params.metadataField)) {
+        	this.params.metadataField = checkboxVisibleOption;
+        }
     	
     	this.loadMessages().then(() => {
             this.initMinifiedContainer();
@@ -111,6 +125,21 @@ class Feedybacky {
         this.extendedContainer.id = 'feedybacky-container-extended';
         this.extendedContainer.setAttribute('data-html2canvas-ignore', true);
         this.container.appendChild(this.extendedContainer);
+		
+		let screenshotCheckboxHtml = '';
+        if(this.params.screenshotField == checkboxVisibleOption) {
+        	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true"/>${this.params.texts.screenshot}</label>`;
+        }
+        
+        let metadataCheckboxHtml = '';
+        if(this.params.metadataField == checkboxVisibleOption) {
+        	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true"/>${this.params.texts.metadata}</label>`;
+        }
+        
+        let additionalDataInformationHtml = '';
+        if(screenshotCheckboxHtml || metadataCheckboxHtml) {
+        	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>`;
+        }
 
         const html = `
 			<div id="feedybacky-container-title">${this.params.texts.title}</div>
@@ -123,9 +152,9 @@ class Feedybacky {
 			<form id="feedybacky-form">
 				<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" maxlength="" aria-required="true"></textarea>
 				<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
-				<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>
-				<label class="feedybacky-container-checkbox"><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true"/>${this.params.texts.screenshot}</label>
-				<label class="feedybacky-container-checkbox"><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true"/>${this.params.texts.metadata}</label>
+				${additionalDataInformationHtml}
+				${screenshotCheckboxHtml}
+				${metadataCheckboxHtml}
 				<button id="feedybacky-form-submit-button" type="submit">${this.params.texts.send}</button>
 			</form>
 			<div id="feedybacky-container-powered">
@@ -172,8 +201,14 @@ class Feedybacky {
             url: window.location.href,
             errors: this.consoleErrors
         };
+		
+		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
+        let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
+        
+        const screenshotAllowed = screenshotAllowedInput ? screenshotAllowedInput.checked : (this.params.screenshotField == checkboxAutoEnableOption);
+        const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption); 
 
-        if(document.getElementById('feedybacky-form-metadata-allowed').checked) {
+        if(metadataAllowed) {
             payload['agent'] = navigator.userAgent;
             payload['cookies'] = document.cookie;
             payload['platform'] = navigator.platform;
@@ -191,7 +226,7 @@ class Feedybacky {
 			payload['extraInfo'] = this.extraInfoFunction();
 		}
 
-        if(document.getElementById('feedybacky-form-screenshot-allowed').checked) {
+        if(screenshotAllowed) {
             html2canvas(document.body, {
 				onrendered: canvas => {
 					payload['image'] = canvas.toDataURL('image/png');
