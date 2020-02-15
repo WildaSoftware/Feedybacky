@@ -1,0 +1,45 @@
+body {
+	margin: 0;
+	background-color: #a0c9ec;
+}
+
+nav {
+	padding: 1rem 2rem;
+	background-color: #2e3d4a;
+}
+
+nav a {
+	color: #b5d5f0;
+	font-size: 1.5rem;
+	text-decoration: none;
+}
+
+nav a:hover {
+	text-decoration: underline;
+}
+
+nav a:not(:first-child) {
+	margin-left: 1.5rem;
+}
+
+nav img {
+	height: 30px;
+}
+
+nav img, nav a {
+	vertical-align: middle;
+}
+
+.container {
+	margin: 1.5rem 3rem;
+}
+
+.container .title {
+	font-size: 3rem;
+	font-weight: bold;
+	margin-bottom: 2rem;
+}
+
+.container .description {
+	font-size: 1.2rem;
+}
