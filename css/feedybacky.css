@@ -115,6 +115,10 @@
 	margin-right: 5px;
 }
 
+#feedybacky-form label {
+	display: inline-block;
+}
+
 #feedybacky-form-submit-button {
 	display: block; 
 	margin-left: auto; 
