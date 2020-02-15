@@ -23,6 +23,8 @@ class Feedybacky {
 		this.extraInfoFunction = params.extraInfo || null;
 		this.beforeSubmitFunction = params.beforeSubmit || null;
 		this.prefix = params.prefix || null;
+		this.onSubmitUrlSuccess = params.onSubmitUrlSuccess || null;
+		this.onSubmitUrlError = params.onSubmitUrlError || null;
 		
 		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
         	this.params.screenshotField = checkboxVisibleOption;
@@ -286,12 +288,24 @@ class Feedybacky {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
-        }).then(data => {
-            if(data.status == 200 || data.status == 201) {
+        }).then(response => {
+			if(response.status == 200 || response.status == 201) {
                 this.showAlertContainer(true);
+				
+				if(this.onSubmitUrlSuccess) {
+					response.text().then(res => {
+						this.onSubmitUrlSuccess(response.status, res);
+					});
+				}
             }
             else {
                 this.showAlertContainer(false);
+				
+				if(this.onSubmitUrlError) {
+					response.text().then(res => {
+						this.onSubmitUrlError(response.status, res);
+					});
+				}
             }
         }).catch(e => {
             this.showAlertContainer(false, e);
