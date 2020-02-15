@@ -22,6 +22,7 @@ class Feedybacky {
         this.container = document.getElementById(id);		
 		this.extraInfoFunction = params.extraInfo || null;
 		this.beforeSubmitFunction = params.beforeSubmit || null;
+		this.prefix = params.prefix || null;
 		
 		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
         	this.params.screenshotField = checkboxVisibleOption;
@@ -232,6 +233,10 @@ class Feedybacky {
 		if(emailInput) {
         	payload.email = emailInput.value;
         }
+		
+		if(this.prefix) {
+			payload.prefix = this.prefix;
+		}
 		
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
         let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
