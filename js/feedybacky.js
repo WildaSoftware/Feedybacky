@@ -5,6 +5,13 @@ const checkboxAutoEnableOption = 'autoEnable';
 const checkboxAutoDisableOption = 'autoDisable';
 const checkboxOptions = [checkboxVisibleOption, checkboxAutoEnableOption, checkboxAutoDisableOption];
 
+class FeedybackyPayload {
+	
+	add(key, value) {
+		this[key] = value;
+	}
+}
+
 class Feedybacky {
 
     constructor(id, params) {
@@ -14,6 +21,7 @@ class Feedybacky {
         this.importDependencies();
         this.container = document.getElementById(id);		
 		this.extraInfoFunction = params.extraInfo || null;
+		this.beforeSubmitFunction = params.beforeSubmit || null;
 		
 		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
         	this.params.screenshotField = checkboxVisibleOption;
@@ -215,15 +223,14 @@ class Feedybacky {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
 		let emailInput = document.getElementById('feedybacky-form-email');
     	
-        let payload = {
-            message: descriptionInput.value,
-            timestamp: new Date(),
-            url: window.location.href,
-            errors: this.consoleErrors
-        };
+		let payload = new FeedybackyPayload();
+		payload.message = descriptionInput.value;
+		payload.timestamp = new Date();
+		payload.url = window.location.href;
+		payload.errors = this.consoleErrors;
 		
 		if(emailInput) {
-        	payload['email'] = emailInput.value;
+        	payload.email = emailInput.value;
         }
 		
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
@@ -233,32 +240,34 @@ class Feedybacky {
         const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption); 
 
         if(metadataAllowed) {
-            payload['agent'] = navigator.userAgent;
-            payload['cookies'] = document.cookie;
-            payload['platform'] = navigator.platform;
-            payload['screenSize'] = `${screen.width}x${screen.height}`;
-            payload['availableScreenSize'] = `${screen.availWidth}x${screen.availHeight}`;
-            payload['innerSize'] = `${window.innerWidth}x${window.innerHeight}`;
-            payload['colorDepth'] = screen.colorDepth;
+            payload.agent = navigator.userAgent;
+            payload.cookies = document.cookie;
+            payload.platform = navigator.platform;
+            payload.screenSize = `${screen.width}x${screen.height}`;
+            payload.availableScreenSize = `${screen.availWidth}x${screen.availHeight}`;
+            payload.innerSize = `${window.innerWidth}x${window.innerHeight}`;
+            payload.colorDepth = screen.colorDepth;
             
             if(screen.orientation) {
-            	payload['orientation'] = screen.orientation.type;
+            	payload.orientation = screen.orientation.type;
         	}
         }
 		
 		if(this.extraInfoFunction) {
-			payload['extraInfo'] = this.extraInfoFunction();
+			payload.extraInfo = this.extraInfoFunction();
 		}
-
-        if(screenshotAllowed) {
+		
+		if(screenshotAllowed) {
             html2canvas(document.body, {
 				onrendered: canvas => {
-					payload['image'] = canvas.toDataURL('image/png');
+					payload.image = canvas.toDataURL('image/png');
+					this.handleBeforeSubmitCallback(payload);
 					this.sendPostRequest(this.params.onSubmitUrl, payload);
 				}
             });
         }
         else {
+			this.handleBeforeSubmitCallback(payload);
             this.sendPostRequest(this.params.onSubmitUrl, payload);
         }
         
@@ -283,6 +292,12 @@ class Feedybacky {
             this.showAlertContainer(false, e);
         })
     }
+	
+	handleBeforeSubmitCallback(payload) {
+		if(this.beforeSubmitFunction) {
+			this.beforeSubmitFunction(payload);
+		}
+	}
 
     showMinimalContainer() {
         this.extendedContainer.style.display = 'none';
@@ -368,5 +383,6 @@ class Feedybacky {
 }
 
 if(typeof module !== 'undefined') {
+	module.exports.FeedybackyPayload = FeedybackyPayload;
 	module.exports.Feedybacky = Feedybacky;
 }
