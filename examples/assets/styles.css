@@ -43,3 +43,8 @@ nav img, nav a {
 .container .description {
 	font-size: 1.2rem;
 }
+
+#response-result {
+	margin-top: 4rem;
+	font-size: 2rem;
+}

@@ -137,8 +137,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **screenshot** - label for the checkbox to accept sending a screenshot.
 * **metadata** - label for the checkbox to accept sending metadata.
 * **send** - label for the "Send" button.
-* **requestSuccess** - message visible after successful POST request sent.
-* **requestFail** - message visible after unsuccessful POST request sent.
+* **requestSuccess** - message visible after successful POST request sending.
+* **requestFail** - message visible after unsuccessful POST request sending.
 * **powered** - message on bottom of the plugin screen.
 * **error404** - message after a situation where an 404 error occurred.
 * **error500** - message after a situation where an 500 error occurred.

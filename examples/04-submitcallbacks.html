@@ -24,6 +24,8 @@
 				<br/>
 				This example shows usage of callbacks for success and error during sending a POST request with payload.
 			</div>
+			
+			<div id="response-result"></div>
 		</div>
 
 		<div id="feedybacky-container"></div>
@@ -32,13 +34,14 @@
 		<script>
 			var feedybacky = new Feedybacky('feedybacky-container', {
 				onSubmitUrl: 'backend/api.php',
+				alertAfterRequest: false,
 				onSubmitUrlSuccess: (statusCode, response) => {
-					console.log(statusCode);
-					console.log(response);
+					let resultText = document.getElementById('response-result');
+					resultText.innerHTML = `<span style="color: green">${statusCode}: <pre>${response}</pre></span>`;
 				},
 				onSubmitUrlError: (statusCode, response) => {
-					console.log(statusCode);
-					console.log(response);
+					let resultText = document.getElementById('response-result');
+					resultText.innerHTML = `<span style="color: red">${statusCode}</span>`;
 				}
 			});
 		</script>

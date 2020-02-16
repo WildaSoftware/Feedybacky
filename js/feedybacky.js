@@ -34,6 +34,10 @@ class Feedybacky {
         	this.params.metadataField = checkboxVisibleOption;
         }
 		
+		if(typeof this.params.alertAfterRequest !== 'boolean') {
+			this.params.alertAfterRequest = true;
+		}
+		
 		this.params.emailField = this.params.emailField || false;
     	
     	this.loadMessages().then(() => {
@@ -330,6 +334,10 @@ class Feedybacky {
     }
 
     showAlertContainer(isSuccess, status) {
+		if(!this.params.alertAfterRequest) {
+			return;
+		}
+		
     	this.alertContainer.classList = '';
     	
         if(isSuccess) {
