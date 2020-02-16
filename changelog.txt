@@ -1,3 +1,14 @@
+Version 1.3 (2020-02-16)
+========================
+
+1. Callback "beforeSubmit" can be defined.
+2. Callback "onSubmitUrlSuccess" can be defined.
+3. Callback "onSubmitUrlError" can be defined.
+4. Prefix can be defined for the form.
+5. Alerts after request can be enabled or disabled by "alertAfterRequest" parameter.
+6. Fix with checkbox display on the form.
+7. Directory with examples is present.
+
 Version 1.2 (2019-12-27)
 ========================
 

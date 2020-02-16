@@ -127,6 +127,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
+* **prefix** - prefix defined for the Feedybacky instance (if defined).
 
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
@@ -153,6 +154,25 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 `screenshotField ` - optional parameter for defining behaviour of the plugin during processing a screenshot. The default value is `"visible"` and it means that the checkbox is visible and a user can select if they would like to send a screenshot or not. The other possible values are `"autoEnable"` (the checkbox is not visible and the screenshot is sent automatically) and `"autoDisable"` (the checkbox is not visible and the screenshot is ignored).
 
 `metadataField` - optional parameter for defining behaviours of the plugin during processing metadata. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above.
+
+`beforeSubmit` - optional callback function with one parameter - instance of `FeedybackyPayload` object containing whole payload ready to sent. This callback is invoked before sending a request to endpoint defined by `onSubmitUrl` parameter. It can be used to make some preparations before sending (for example, show loader animation) or add some additional fields to payload, such as authentication key. The last one can be achieved by `add` function invoked inside `beforeSubmit`, e.g.:
+
+```ts
+beforeSubmit: (payload) => {
+	alert('We are in beforeSubmit function and we add some fields to payload.');
+
+	payload.add('param1', 'Value of additional parameter 1');
+	payload.add('param2', 'Value of additional parameter 2');
+}
+```
+
+`onSubmitUrlSuccess` - optional callback function invoked after successful request sending to endpoint defined by `onSubmitUrl` parameter. It has two parameters: `statusCode` and `response` (the latter is textual representation of response body).
+
+`onSubmitUrlError` - optional callback function invoked after failed request sending to endpoint defined by `onSubmitUrl` parameter. It has two parameters: `statusCode` and `response` (the latter is textual representation of response body).
+
+`prefix` - optional parameter with text added to each request. It can be useful to distinct request sent from one site but in various sets of configuration - it can be used as tag, label.
+
+`alertAfterRequest` - optional parameter which indicates if the alter after sending a request should be visible. Value should be of boolean type - the default value is `true`.
 
 ### Authors ###
 
