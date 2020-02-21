@@ -45,6 +45,22 @@ class Feedybacky {
 		}
 		
 		this.params.emailField = this.params.emailField || false;
+		
+		if(typeof this.params.adBlockDetected === 'undefined') {
+			let adBlockBait = document.createElement('div');
+			adBlockBait.innerHTML = '&nbsp;';
+			adBlockBait.className = 'adsbox';
+			document.body.appendChild(adBlockBait);
+			window.setTimeout(() => {
+				if(adBlockBait.offsetHeight === 0) {
+					this.params.adBlockDetected = true;
+				}
+				else {
+					this.params.adBlockDetected = false;
+				}
+				document.body.removeChild(adBlockBait);
+			}, 60);
+		}
     	
     	this.loadMessages().then(() => {
             this.initMinifiedContainer();
@@ -280,6 +296,7 @@ class Feedybacky {
             payload.agent = navigator.userAgent;
             payload.cookies = document.cookie;
             payload.platform = navigator.platform;
+			payload.adBlock = !!this.params.adBlockDetected;
             payload.screenSize = `${screen.width}x${screen.height}`;
             payload.availableScreenSize = `${screen.availWidth}x${screen.availHeight}`;
             payload.innerSize = `${window.innerWidth}x${window.innerHeight}`;
