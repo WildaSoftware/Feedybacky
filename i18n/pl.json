@@ -5,6 +5,7 @@
     "additionalDataInformation": "System <b>automatycznie</b> doda do Twojego zgłoszenia potrzebne dane i informacje - zaznacz poniżej, które z nich chcesz dodać.",
     "screenshot": "Załącz zrzut ekranu aktualnie otwartej strony (dotyczy wyłącznie zawartości - pomija zakładki i ikony).",
     "metadata": "Załącz informacje o przeglądarce i sesji.",
+	"history": "Załącz informacje o ostatnich operacjach na stronie przed wysłaniem żądania.",
     "send": "Wyślij",
     "powered": "Zgłoszenia możliwe dzięki",
     "requestSuccess": "Zgłoszenie wysłane pomyślnie.",

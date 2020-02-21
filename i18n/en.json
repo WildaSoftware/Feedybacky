@@ -5,6 +5,7 @@
     "additionalDataInformation": "The system will <b>automatically</b> add the necessary data and information to your request - below you can select which you want to add.",
     "screenshot": "Attach a screenshot of the currently opened page (concerns content only - ignores browser shortcuts and icons).",
     "metadata": "Include browser and session information.",
+	"history": "Include information about last operations on page before sending a request.",
     "send": "Send",
     "powered": "Powered by",
     "requestSuccess": "Report sent successfully.",

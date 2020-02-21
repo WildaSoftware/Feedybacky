@@ -48,3 +48,23 @@ nav img, nav a {
 	margin-top: 4rem;
 	font-size: 2rem;
 }
+
+#project-form {
+	margin-top: 2rem;
+}
+
+#project-form label, #project-form input, #project-form select {
+	display: block;
+}
+
+#project-form input[type="checkbox"] {
+	display: inline-block;
+}
+
+#project-form input[type="checkbox"] + label {
+	display: inline-block;
+}
+
+#project-form input, #project-form select {
+	margin-bottom: 1rem;
+}

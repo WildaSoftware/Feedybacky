@@ -25,6 +25,8 @@ class Feedybacky {
 		this.prefix = params.prefix || null;
 		this.onSubmitUrlSuccess = params.onSubmitUrlSuccess || null;
 		this.onSubmitUrlError = params.onSubmitUrlError || null;
+		this.eventHistory = [];
+		this.historyLimit = params.historyLimit || null;
 		
 		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
         	this.params.screenshotField = checkboxVisibleOption;
@@ -33,6 +35,10 @@ class Feedybacky {
         if(!this.params.metadataField || !checkboxOptions.includes(this.params.metadataField)) {
         	this.params.metadataField = checkboxVisibleOption;
         }
+		
+		if(!this.params.historyField || !checkboxOptions.includes(this.params.historyField)) {
+			this.params.historyField = checkboxVisibleOption;
+		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
 			this.params.alertAfterRequest = true;
@@ -79,6 +85,10 @@ class Feedybacky {
                 this.consoleErrors.push(`${err} ${url} ${line}`);
                 return false;
             };
+			
+			if([checkboxVisibleOption, checkboxAutoEnableOption].includes(this.params.historyField)) {
+				this.initEventHistoryGathering();
+			}
         });
     }
     
@@ -161,9 +171,14 @@ class Feedybacky {
         if(this.params.metadataField == checkboxVisibleOption) {
         	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true"/>${this.params.texts.metadata}</label>`;
         }
+		
+		let historyCheckboxHtml = '';
+		if(this.params.historyField == checkboxVisibleOption) {
+			historyCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-history-allowed" checked="true"/>${this.params.texts.history}</label>`;
+		}
         
         let additionalDataInformationHtml = '';
-        if(screenshotCheckboxHtml || metadataCheckboxHtml) {
+        if(screenshotCheckboxHtml || metadataCheckboxHtml || historyCheckboxHtml) {
         	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>`;
         }
 
@@ -182,6 +197,7 @@ class Feedybacky {
 				${additionalDataInformationHtml}
 				${screenshotCheckboxHtml}
 				${metadataCheckboxHtml}
+				${historyCheckboxHtml}
 				<button id="feedybacky-form-submit-button" type="submit">${this.params.texts.send}</button>
 			</form>
 			<div id="feedybacky-container-powered">
@@ -246,9 +262,11 @@ class Feedybacky {
 		
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
         let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
+		let historyAllowedInput = document.getElementById('feedybacky-form-history-allowed');
         
         const screenshotAllowed = screenshotAllowedInput ? screenshotAllowedInput.checked : (this.params.screenshotField == checkboxAutoEnableOption);
-        const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption); 
+        const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption);
+		const historyAllowed = historyAllowedInput ? historyAllowedInput.checked : (this.params.historyField == checkboxAutoEnableOption);
 
         if(metadataAllowed) {
             payload.agent = navigator.userAgent;
@@ -263,6 +281,14 @@ class Feedybacky {
             	payload.orientation = screen.orientation.type;
         	}
         }
+		
+		if(historyAllowed) {
+			if(this.historyLimit) {
+				this.eventHistory = this.eventHistory.slice(Math.max(this.eventHistory.length - this.historyLimit, 0));
+			}
+			
+			payload.history = this.eventHistory;
+		}
 		
 		if(this.extraInfoFunction) {
 			payload.extraInfo = this.extraInfoFunction();
@@ -315,6 +341,39 @@ class Feedybacky {
             this.showAlertContainer(false, e);
         })
     }
+	
+	initEventHistoryGathering() {
+		let eventsToListen = ['change', 'click', 'focus', 'reset', 'submit'];
+		
+		for(let i = 0; i < eventsToListen.length; ++i) {
+			document.addEventListener(eventsToListen[i], (e) => {
+				if(e.target.id && !(/^feedybacky/.test(e.target.id))) {				
+					let historyEntry = {
+						eventType: e.type,
+						tagName: e.target.tagName.toLowerCase()
+					};
+					
+					if(e.target.id) {
+						historyEntry['id'] = e.target.id;
+					}
+					
+					if(e.target.className) {
+						historyEntry['className'] = e.target.className;
+					}
+					
+					if(e.target.getAttribute('name')) {
+						historyEntry['name'] = e.target.getAttribute('name');
+					}
+					
+					if(e.target.value) {
+						historyEntry['value'] = e.target.value;
+					}
+					
+					this.eventHistory.push(historyEntry);
+				}
+			});
+		}
+	}
 	
 	handleBeforeSubmitCallback(payload) {
 		if(this.beforeSubmitFunction) {

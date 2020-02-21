@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Feedybacky - example page</title>
+		<meta name="description" content="The HTML5 Herald">
+		<meta name="author" content="SitePoint">
+
+		<link rel="stylesheet" href="assets/styles.css">	
+	</head>
+	<body>
+		<nav>
+			<img src="../img/icon.png"/>
+			<a href="https://github.com/WildaSoftware/Feedybacky" target="_blank">Github</a>
+			<a href="https://www.npmjs.com/package/feedybacky" target="_blank">NPM</a>
+			<a href="http://wildasoftware.pl/" target="_blank">Wilda Software</a>
+		</nav>
+
+		<div class="container">
+			<div class="title">Feedybacky example page</div>
+			<div class="description">
+				This page is a template and a playground for testing Feedybacky plugin. Feel free to experiment and enjoy!
+				<br/>
+				This example shows how to gather history of events triggered by the user's actions.
+			</div>
+			
+			<form id="project-form">
+				<label for="project-name">Project name:</label>
+				<input type="text" id="project-name" name="project-name" class="form-input">
+				
+				<input type="checkbox" id="project-privacy" name="project-privacy" value="private" class="form-input form-checkbox">
+				<label for="project-privacy"> My project is private</label>	
+				
+				<input type="button" onclick="alert('This is alert')" value="Show me the alert" class="form-button">
+				
+				<label for="project-category">Project category:</label>
+				<select id="project-category" class="form-select">
+					<option value="it">IT</option>
+					<option value="marketing">Marketing</option>
+					<option value="services">Services</option>
+					<option value="other">Other</option>
+				</select>
+				
+				<input type="submit" value="Submit" class="form-button form-submit">
+				<input type="reset">
+			</form>
+		</div>
+
+		<div id="feedybacky-container"></div>
+		
+		<script type="text/javascript" src="../js/feedybacky.min.js"></script>
+		<script>
+			var feedybacky = new Feedybacky('feedybacky-container', {
+				onSubmitUrl: 'backend/api.php',
+				historyField: 'visible',
+				historyLimit: 10
+			});
+		</script>
+	</body>
+</html>
