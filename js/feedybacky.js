@@ -133,6 +133,14 @@ class Feedybacky {
         	this.params.texts[key] = this.params.texts[key] || value;
         }
     }
+	
+	open() {
+		this.showExtendedContainer();
+	}
+	
+	close() {
+		this.showMinimalContainer();
+	}
     
     initMinifiedContainer() {
     	this.minifiedContainer = document.createElement('div');
