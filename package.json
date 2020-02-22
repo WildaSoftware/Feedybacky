@@ -1,6 +1,6 @@
 {
   "name": "feedybacky",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Feedybacky - JS plugin to facilitate feedback requests from users on web pages.",
   "main": "",
   "scripts": {

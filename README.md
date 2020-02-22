@@ -125,9 +125,11 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **innerSize** - size of visible frame (result of `window.innerWidth` and `window.innerHeight`). Available only if the user accepted sending metadata information.
 * **colorDepth** - depth of the pixel on the screen (result of `screen.colorDepth`). Available only if the user accepted sending metadata information.
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
+* **history** - array of objects representing last N events called by the user (details below). Available only if the user accepted sending history information.
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
+* **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
 
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
@@ -137,6 +139,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **additionalDataInformation** - description on the plugin screen (after textarea, before checkboxes).
 * **screenshot** - label for the checkbox to accept sending a screenshot.
 * **metadata** - label for the checkbox to accept sending metadata.
+* **history** - label for the checkbox to accept sending event history.
 * **send** - label for the "Send" button.
 * **requestSuccess** - message visible after successful POST request sending.
 * **requestFail** - message visible after unsuccessful POST request sending.
@@ -153,7 +156,11 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 
 `screenshotField ` - optional parameter for defining behaviour of the plugin during processing a screenshot. The default value is `"visible"` and it means that the checkbox is visible and a user can select if they would like to send a screenshot or not. The other possible values are `"autoEnable"` (the checkbox is not visible and the screenshot is sent automatically) and `"autoDisable"` (the checkbox is not visible and the screenshot is ignored).
 
-`metadataField` - optional parameter for defining behaviours of the plugin during processing metadata. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above.
+`metadataField` - optional parameter for defining behaviour of the plugin during processing metadata. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above.
+
+`historyField` - optional parameter for defining behaviour of the plugin during processing event history. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above. Captured event types are: `change`, `click`, `focus`, `reset`, `submit` and there are omitted for Feedybacky form.
+
+`historyLimit` - number of last event calls on the page which would be added to event history. The default value is not set what means that all captured operations would be sent.  
 
 `beforeSubmit` - optional callback function with one parameter - instance of `FeedybackyPayload` object containing whole payload ready to sent. This callback is invoked before sending a request to endpoint defined by `onSubmitUrl` parameter. It can be used to make some preparations before sending (for example, show loader animation) or add some additional fields to payload, such as authentication key. The last one can be achieved by `add` function invoked inside `beforeSubmit`, e.g.:
 
@@ -173,6 +180,16 @@ beforeSubmit: (payload) => {
 `prefix` - optional parameter with text added to each request. It can be useful to distinct request sent from one site but in various sets of configuration - it can be used as tag, label.
 
 `alertAfterRequest` - optional parameter which indicates if the alter after sending a request should be visible. Value should be of boolean type - the default value is `true`.
+
+`adBlockDetected` - optional parameter to pass information about AdBlock detection from an external script or tool. This paramter can be useful in situations where basic detector in Feedybacky is not sufficient.
+
+### Methods ###
+
+After creating the Feedybacky object, some methods could be invoked on it:
+
+`open` - immediate opening the container with Feedybacky form.
+
+`close` - immediate closing the container with Feedybacky form.
 
 ### Authors ###
 

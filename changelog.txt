@@ -1,3 +1,10 @@
+Version 1.4 (2020-02-22)
+========================
+
+1. It is possible to save history of some user actions (basing on set of JavaScript's event types) and send last N actions with request.
+2. The form can be opened or closed programatically with methods "open" and "close".
+3. Basic detection of enabled AdBlock has been added with the possibility of passing the value test from a external source.
+
 Version 1.3 (2020-02-16)
 ========================
 
