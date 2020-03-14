@@ -5,6 +5,16 @@ const checkboxAutoEnableOption = 'autoEnable';
 const checkboxAutoDisableOption = 'autoDisable';
 const checkboxOptions = [checkboxVisibleOption, checkboxAutoEnableOption, checkboxAutoDisableOption];
 
+const orderDescriptionPart = 'description';
+const orderMessagePart = 'message';
+const orderEmailPart = 'email';
+const orderExplanationPart = 'explanation';
+const orderScreenshotCheckboxPart = 'screenshotCheckbox';
+const orderMetadataCheckboxPart = 'metadataCheckbox';
+const orderHistoryCheckboxPart = 'historyCheckbox';
+const orderNotePart = 'note';
+const orderParts = [orderDescriptionPart.toLowerCase(), orderMessagePart.toLowerCase(), orderEmailPart.toLowerCase(), orderExplanationPart.toLowerCase(), orderScreenshotCheckboxPart.toLowerCase(), orderMetadataCheckboxPart.toLowerCase(), orderHistoryCheckboxPart.toLowerCase(), orderNotePart.toLowerCase()];
+
 class FeedybackyPayload {
 	
 	add(key, value) {
@@ -42,6 +52,20 @@ class Feedybacky {
 		
 		if(!this.params.side || !['left', 'right'].includes(this.params.side)) {
 			this.params.side = 'right';
+		}
+		
+		if(this.params.order) {
+			const orderSplit = this.params.order.replace(/\s/g, '').split(',');
+			const newOrderSplit = [];
+			for(let i = 0; i < orderSplit.length; ++i) {
+				if(orderParts.includes(orderSplit[i].toLowerCase())) {
+					newOrderSplit.push(orderSplit[i]);
+				}
+			}
+			this.params.order = newOrderSplit.join(',');
+		}
+		else {
+			this.params.order = 'description,message,email,explanation,screenshotCheckbox,metadataCheckbox,historyCheckbox,note';
 		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
@@ -183,6 +207,17 @@ class Feedybacky {
         this.extendedContainer.setAttribute('data-html2canvas-ignore', true);
         this.container.appendChild(this.extendedContainer);
 		
+		let descriptionHtml = `
+			<div id="feedybacky-description">
+				${this.params.texts.description}
+			</div>
+		`;
+		
+		let messageHtml = `
+			<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true"></textarea>
+			<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
+		`;
+		
 		let emailInputHtml = '';
         if(this.params.emailField) {
         	emailInputHtml = `
@@ -216,24 +251,30 @@ class Feedybacky {
 		if(this.params.texts.note) {
 			noteHtml = `<div id="feedybacky-container-note">${this.params.texts.note}</div>`;
 		}
+		
+		const extendedParts = {};
+		extendedParts[orderDescriptionPart] = `${descriptionHtml}`;
+		extendedParts[orderMessagePart] = `${messageHtml}`;
+		extendedParts[orderExplanationPart] = `${additionalDataInformationHtml}`;
+		extendedParts[orderEmailPart] = `${emailInputHtml}`;
+		extendedParts[orderScreenshotCheckboxPart] = `${screenshotCheckboxHtml}`;
+		extendedParts[orderMetadataCheckboxPart] = `${metadataCheckboxHtml}`;
+		extendedParts[orderHistoryCheckboxPart] = `${historyCheckboxHtml}`;
+		extendedParts[orderNotePart] = `${noteHtml}`;
+		
+		let variablesInRequiredOrder = '';
+		const orderSplit = this.params.order.split(',');
+		for(let i = 0; i < orderSplit.length; ++i) {
+			variablesInRequiredOrder += `${extendedParts[orderSplit[i]]}`;
+		}
 
         const html = `
 			<div id="feedybacky-container-title">${this.params.texts.title}</div>
-			<div id="feedybacky-container-hide-button" aria-label="Zamknij">
+			<div id="feedybacky-container-hide-button" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</div>
-			<div id="feedybacky-description">
-				${this.params.texts.description}
-			</div>
 			<form id="feedybacky-form">
-				<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true"></textarea>
-				<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
-				${emailInputHtml}
-				${additionalDataInformationHtml}
-				${screenshotCheckboxHtml}
-				${metadataCheckboxHtml}
-				${historyCheckboxHtml}
-				${noteHtml}
+				${variablesInRequiredOrder}
 				<button id="feedybacky-form-submit-button" type="submit">${this.params.texts.send}</button>
 			</form>
 			<div id="feedybacky-container-powered">
