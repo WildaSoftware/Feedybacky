@@ -40,6 +40,10 @@ class Feedybacky {
 			this.params.historyField = checkboxVisibleOption;
 		}
 		
+		if(!this.params.side || !['left', 'right'].includes(this.params.side)) {
+			this.params.side = 'right';
+		}
+		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
 			this.params.alertAfterRequest = true;
 		}
@@ -161,6 +165,7 @@ class Feedybacky {
     initMinifiedContainer() {
     	this.minifiedContainer = document.createElement('div');
         this.minifiedContainer.id = 'feedybacky-container-minified';
+		this.minifiedContainer.classList = 'feedybacky-container-' + this.params.side;
         this.minifiedContainer.title = this.params.texts.tooltip;
         this.minifiedContainer.innerHTML = '<div></div>';
         this.minifiedContainer.setAttribute('data-html2canvas-ignore', true);
@@ -174,6 +179,7 @@ class Feedybacky {
     initExtendedContainer() {
     	this.extendedContainer = document.createElement('div');
         this.extendedContainer.id = 'feedybacky-container-extended';
+		this.extendedContainer.classList = 'feedybacky-container-' + this.params.side;
         this.extendedContainer.setAttribute('data-html2canvas-ignore', true);
         this.container.appendChild(this.extendedContainer);
 		

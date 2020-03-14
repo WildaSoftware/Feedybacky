@@ -3,12 +3,19 @@
 	position: fixed;
 	border: 1px solid black;
 	top: 100px;
-	right: 0px;
 	width: 40px;
 	height: 40px;
 	cursor: pointer;
 	background-color: white;
 	z-index: 10000;
+}
+
+.feedybacky-container-right {
+	right: 0px;
+}
+
+.feedybacky-container-left {
+	left: 0px;
 }
 
 #feedybacky-container-minified div {
@@ -62,7 +69,6 @@
 	border: 1px solid black;
 	position: absolute;
 	top: 100px;
-	right: 0px;
 	width: 25%;
 	min-width: 200px;
 	padding: 5px 10px 10px;
