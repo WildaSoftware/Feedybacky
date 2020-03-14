@@ -140,6 +140,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **screenshot** - label for the checkbox to accept sending a screenshot.
 * **metadata** - label for the checkbox to accept sending metadata.
 * **history** - label for the checkbox to accept sending event history.
+* **note** - label for the text between checkboxes and send button (empty by default and then not visible).
 * **send** - label for the "Send" button.
 * **requestSuccess** - message visible after successful POST request sending.
 * **requestFail** - message visible after unsuccessful POST request sending.
@@ -182,6 +183,14 @@ beforeSubmit: (payload) => {
 `alertAfterRequest` - optional parameter which indicates if the alter after sending a request should be visible. Value should be of boolean type - the default value is `true`.
 
 `adBlockDetected` - optional parameter to pass information about AdBlock detection from an external script or tool. This paramter can be useful in situations where basic detector in Feedybacky is not sufficient.
+
+`side` - optional parameter for determining side of the Feedybacky. Default value is `right` and means that the plugin is visible on the right side of the website. Another possible value is `left`.
+
+`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,explanation,screenshot,metadata,history,note"`. 
+
+`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, explanation, screenshot, metadata, history, note, send, powered`.
+
+`expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
 
 ### Methods ###
 

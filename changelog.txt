@@ -1,3 +1,12 @@
+Version 1.5 (2020-03-14)
+========================
+
+1. New section can be added to the form - note, located between checkboxes and send button by default.
+2. Reordering elements inside the form is possible.
+3. Feedybacky can be located on the left side.
+4. Most of Feedybacky's elements can have additional class in order to further style (classes object).
+5. Expand link for message can be added.
+
 Version 1.4 (2020-02-22)
 ========================
 
