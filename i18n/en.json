@@ -2,6 +2,7 @@
     "tooltip": "Report a suggestion or error to us!",
     "title": "Report suggestion!",
     "description": "Enter a description for the request. Remember to include as much useful information as possible.",
+	"expand": "Expand",
     "additionalDataInformation": "The system will <b>automatically</b> add the necessary data and information to your request - below you can select which you want to add.",
     "screenshot": "Attach a screenshot of the currently opened page (concerns content only - ignores browser shortcuts and icons).",
     "metadata": "Include browser and session information.",

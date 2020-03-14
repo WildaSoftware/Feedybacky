@@ -9,11 +9,16 @@ const orderDescriptionPart = 'description';
 const orderMessagePart = 'message';
 const orderEmailPart = 'email';
 const orderExplanationPart = 'explanation';
-const orderScreenshotCheckboxPart = 'screenshotCheckbox';
-const orderMetadataCheckboxPart = 'metadataCheckbox';
-const orderHistoryCheckboxPart = 'historyCheckbox';
+const orderScreenshotCheckboxPart = 'screenshot';
+const orderMetadataCheckboxPart = 'metadata';
+const orderHistoryCheckboxPart = 'history';
 const orderNotePart = 'note';
-const orderParts = [orderDescriptionPart.toLowerCase(), orderMessagePart.toLowerCase(), orderEmailPart.toLowerCase(), orderExplanationPart.toLowerCase(), orderScreenshotCheckboxPart.toLowerCase(), orderMetadataCheckboxPart.toLowerCase(), orderHistoryCheckboxPart.toLowerCase(), orderNotePart.toLowerCase()];
+const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart];
+
+const orderTitlePart = 'title';
+const orderSendPart = 'send';
+const orderPoweredPart = 'powered';
+const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart];
 
 class FeedybackyPayload {
 	
@@ -38,6 +43,11 @@ class Feedybacky {
 		this.eventHistory = [];
 		this.historyLimit = params.historyLimit || null;
 		
+		this.params.classes = this.params.classes || {};
+		for(let i = 0; i < containerParts.length; ++i) {
+			this.params.classes[containerParts[i]] = this.params.classes[containerParts[i]] || '';
+		}
+		
 		if(!this.params.screenshotField || !checkboxOptions.includes(this.params.screenshotField)) {
         	this.params.screenshotField = checkboxVisibleOption;
         }
@@ -57,8 +67,9 @@ class Feedybacky {
 		if(this.params.order) {
 			const orderSplit = this.params.order.replace(/\s/g, '').split(',');
 			const newOrderSplit = [];
+			const orderPartsToLowerCase = orderParts.map(function(o) { return o.toLowerCase(); });
 			for(let i = 0; i < orderSplit.length; ++i) {
-				if(orderParts.includes(orderSplit[i].toLowerCase())) {
+				if(orderPartsToLowerCase.includes(orderSplit[i].toLowerCase())) {
 					newOrderSplit.push(orderSplit[i]);
 				}
 			}
@@ -73,6 +84,7 @@ class Feedybacky {
 		}
 		
 		this.params.emailField = this.params.emailField || false;
+		this.params.expandMessageLink = this.params.expandMessageLink || false;
 		
 		if(typeof this.params.adBlockDetected === 'undefined') {
 			let adBlockBait = document.createElement('div');
@@ -132,6 +144,15 @@ class Feedybacky {
 			
 			if([checkboxVisibleOption, checkboxAutoEnableOption].includes(this.params.historyField)) {
 				this.initEventHistoryGathering();
+			}
+			
+			const descriptionExpandLink = document.getElementById('feedybacky-form-description-expand');
+			if(descriptionExpandLink) {
+				descriptionExpandLink.addEventListener('click', e => {
+					e.preventDefault();
+					document.getElementById('feedybacky-container-extended').className += ' expanded';
+					e.target.parentNode.removeChild(e.target);
+				});
 			}
         });
     }
@@ -208,48 +229,52 @@ class Feedybacky {
         this.container.appendChild(this.extendedContainer);
 		
 		let descriptionHtml = `
-			<div id="feedybacky-description">
+			<div id="feedybacky-description" class="${this.params.classes.description}">
 				${this.params.texts.description}
 			</div>
 		`;
 		
 		let messageHtml = `
-			<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true"></textarea>
-			<div id="feedybacky-form-description-error-message" class="feedybacky-error-message"></div>
+			<textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true" class="${this.params.classes.message}"></textarea>
+			<div id="feedybacky-form-description-error-message" class="feedybacky-error-message ${this.params.classes.message}"></div>
 		`;
+		
+		if(this.params.expandMessageLink) {
+			messageHtml += `<a href="#" id="feedybacky-form-description-expand" class="${this.params.classes.message}">${this.params.texts.expand}</a>`;
+		}
 		
 		let emailInputHtml = '';
         if(this.params.emailField) {
         	emailInputHtml = `
-        		<div id="feedybacky-container-email-description">${this.params.texts.email}</div>
-        		<input id="feedybacky-form-email" form="feedybacky-form" name="email" aria-required="true"/>
-        		<div id="feedybacky-form-email-error-message" class="feedybacky-error-message"></div>
+        		<div id="feedybacky-container-email-description" class="${this.params.classes.email}">${this.params.texts.email}</div>
+        		<input id="feedybacky-form-email" form="feedybacky-form" name="email" aria-required="true" class="${this.params.classes.email}"/>
+        		<div id="feedybacky-form-email-error-message" class="feedybacky-error-message ${this.params.classes.email}" ></div>
         	`;
         }
 		
 		let screenshotCheckboxHtml = '';
         if(this.params.screenshotField == checkboxVisibleOption) {
-        	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true"/>${this.params.texts.screenshot}</label>`;
+        	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true" class="${this.params.classes.screenshotCheckbox}"/>${this.params.texts.screenshot}</label>`;
         }
         
         let metadataCheckboxHtml = '';
         if(this.params.metadataField == checkboxVisibleOption) {
-        	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true"/>${this.params.texts.metadata}</label>`;
+        	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true" class="${this.params.classes.metadataCheckbox}"/>${this.params.texts.metadata}</label>`;
         }
 		
 		let historyCheckboxHtml = '';
 		if(this.params.historyField == checkboxVisibleOption) {
-			historyCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-history-allowed" checked="true"/>${this.params.texts.history}</label>`;
+			historyCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-history-allowed" checked="true" class="${this.params.classes.historyCheckbox}"/>${this.params.texts.history}</label>`;
 		}
         
         let additionalDataInformationHtml = '';
         if(screenshotCheckboxHtml || metadataCheckboxHtml || historyCheckboxHtml) {
-        	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>`;
+        	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description" class="${this.params.classes.explanation}">${this.params.texts.additionalDataInformation}</div>`;
         }
 		
 		let noteHtml = '';
 		if(this.params.texts.note) {
-			noteHtml = `<div id="feedybacky-container-note">${this.params.texts.note}</div>`;
+			noteHtml = `<div id="feedybacky-container-note" class="${this.params.classes.note}">${this.params.texts.note}</div>`;
 		}
 		
 		const extendedParts = {};
@@ -269,15 +294,15 @@ class Feedybacky {
 		}
 
         const html = `
-			<div id="feedybacky-container-title">${this.params.texts.title}</div>
+			<div id="feedybacky-container-title" class="${this.params.classes.title}">${this.params.texts.title}</div>
 			<div id="feedybacky-container-hide-button" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</div>
 			<form id="feedybacky-form">
 				${variablesInRequiredOrder}
-				<button id="feedybacky-form-submit-button" type="submit">${this.params.texts.send}</button>
+				<button id="feedybacky-form-submit-button" type="submit" class="${this.params.classes.send}">${this.params.texts.send}</button>
 			</form>
-			<div id="feedybacky-container-powered">
+			<div id="feedybacky-container-powered" class="${this.params.classes.powered}">
 				${this.params.texts.powered}
 			</div>
 		`;

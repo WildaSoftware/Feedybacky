@@ -77,6 +77,14 @@
 	line-height: 1.5;
 }
 
+#feedybacky-container-extended.expanded {
+	width: 50%;
+}
+
+#feedybacky-container-extended.expanded #feedybacky-form-description {
+	height: 8em;
+}
+
 #feedybacky-container-title {
 	font-size: 1.2em; 
 	display: inline-block; 
@@ -99,6 +107,10 @@
 	overflow: auto; 
 	resize: none;
 	height: 4em;
+}
+
+#feedybacky-form-description-expand {
+	display: block;
 }
 
 #feedybacky-form-email {

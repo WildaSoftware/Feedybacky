@@ -7,7 +7,25 @@
 		<meta name="description" content="The HTML5 Herald">
 		<meta name="author" content="SitePoint">
 
-		<link rel="stylesheet" href="assets/styles.css">	
+		<link rel="stylesheet" href="assets/styles.css">
+
+		<style>
+			.red-painted {
+				color: red;
+			}
+			
+			.big-text {
+				font-size: 1.5rem;
+			}
+			
+			.italic-text {
+				font-style: italic;
+			}
+			
+			.bordered {
+				border: 1px solid black;
+			}
+		</style>
 	</head>
 	<body>
 		<nav>
@@ -37,7 +55,14 @@
 				},
 				side: 'right',
 				emailField: true,
-				order: 'email,description,message,metadataCheckbox,screenshotCheckbox'
+				order: 'email,description,message,metadata,screenshot,note',
+				expandMessageLink: true,
+				classes: {
+					title: 'italic-text',
+					description: 'red-painted',
+					message: 'big-text italic-text',
+					explanation: 'bordered'
+				}
 			});
 		</script>
 	</body>
