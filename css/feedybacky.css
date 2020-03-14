@@ -111,6 +111,7 @@
 
 #feedybacky-form-description-expand {
 	display: block;
+	text-align: right;
 }
 
 #feedybacky-form-email {
