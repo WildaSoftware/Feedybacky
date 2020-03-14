@@ -205,6 +205,11 @@ class Feedybacky {
         if(screenshotCheckboxHtml || metadataCheckboxHtml || historyCheckboxHtml) {
         	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description">${this.params.texts.additionalDataInformation}</div>`;
         }
+		
+		let noteHtml = '';
+		if(this.params.texts.note) {
+			noteHtml = `<div id="feedybacky-container-note">${this.params.texts.note}</div>`;
+		}
 
         const html = `
 			<div id="feedybacky-container-title">${this.params.texts.title}</div>
@@ -222,6 +227,7 @@ class Feedybacky {
 				${screenshotCheckboxHtml}
 				${metadataCheckboxHtml}
 				${historyCheckboxHtml}
+				${noteHtml}
 				<button id="feedybacky-form-submit-button" type="submit">${this.params.texts.send}</button>
 			</form>
 			<div id="feedybacky-container-powered">
