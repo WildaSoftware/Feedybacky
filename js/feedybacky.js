@@ -76,7 +76,7 @@ class Feedybacky {
 			this.params.order = newOrderSplit.join(',');
 		}
 		else {
-			this.params.order = 'description,message,email,explanation,screenshotCheckbox,metadataCheckbox,historyCheckbox,note';
+			this.params.order = 'description,message,email,explanation,screenshot,metadata,history,note';
 		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
