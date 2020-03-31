@@ -1,0 +1,6 @@
+How to use Feedybacky's wrapper for Wordpress:
+
+1. Run "install.sh" shell script inside the "feedybacky" plugin (at the level where "feedybacky.php" file is located).
+2. Copy whole "feedybacky" directory (with subdirectory "feedybacky" inside) into "plugins" directory of your Wordpress instance (wp-content/plugins).
+3. Activate plugin in Wordpress admin panel.
+4. Change settings of the plugin in Wordpress admin panel (Settings -> Feedybacky).
