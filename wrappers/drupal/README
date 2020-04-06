@@ -1,0 +1,7 @@
+How to use Feedybacky's wrapper for Drupal:
+
+1. Run "install.sh" shell script inside the "custom/feedybacky" module (at the level where "feedybacky.info.yml" file is located).
+2. Copy whole "custom/feedybacky" directory (with subdirectory "feedybacky" inside) into "modules" directory of your Drupal instance. If directory "custom" is already present, just place outside "feedybacky" directory inside "custom".
+3. Install the module in Drupal admin panel.
+4. Move to "admin/structure/block" page and place a new Feedybacky block to one of the regions.
+5. Change settings of the block. Please use old Javascript's notation (for example, avoid arrow functions' notation).

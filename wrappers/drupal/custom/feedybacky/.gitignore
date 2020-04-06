@@ -1,6 +1,6 @@
 *
 !.gitignore
-!assets/*
-!feedybacky.php
+!src/*
+!feedybacky.info.yml
 !install.sh
 !LICENSE

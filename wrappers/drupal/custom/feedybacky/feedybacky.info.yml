@@ -1,0 +1,6 @@
+name: Feedybacky
+description: Feedybacky's plugin wrapper for Drupal. The plugin can be used to facilitate feedback gathering from a web site. This version based on version 1.5 of the original plugin.
+package: Custom
+type: module
+version: 1.0
+core: 8.x

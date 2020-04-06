@@ -200,6 +200,15 @@ After creating the Feedybacky object, some methods could be invoked on it:
 
 `close` - immediate closing the container with Feedybacky form.
 
+### Wrappers ###
+
+Feedybacky can be also useful in some systems which provide a module subsystem helping non-programmers to use various plugins. In `wrappers` directory there are wrappers with manuals for:
+
+* Wordpress
+* Drupal
+
+They are very simple ports of the plugin to these systems (they can be developed if necessary) and can be used as well as standard form of Feedybacky.
+
 ### Authors ###
 
 Feedybacky was created and is maintained by programmers of [Wilda Software](http://wildasoftware.pl/).
