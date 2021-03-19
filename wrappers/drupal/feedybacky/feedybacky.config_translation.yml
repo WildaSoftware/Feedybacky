@@ -1,0 +1,5 @@
+feedybacky.admin.config:
+  title: 'Feedybacky'
+  base_route_name: feedybacky.admin.config
+  names:
+    - feedybacky.settings

@@ -1,0 +1,7 @@
+feedybacky.settings:
+  path: '/admin/config/user-interface/feedybacky'
+  defaults:
+    _title: 'Feedybacky'
+    _form: '\Drupal\feedybacky\Form\FeedybackyForm'
+  requirements:
+    _permission: 'administer site configuration'

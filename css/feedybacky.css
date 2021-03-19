@@ -67,7 +67,7 @@
 #feedybacky-container-extended {
 	display: none;
 	border: 1px solid black;
-	position: absolute;
+	position: fixed;
 	top: 100px;
 	width: 25%;
 	min-width: 200px;

@@ -1,0 +1,5 @@
+feedybacky.settings:
+  title: Feedybacky settings
+  description: 'Configure settings for the Feedybacky module.'
+  route_name: feedybacky.settings
+  parent: system.admin_config_ui

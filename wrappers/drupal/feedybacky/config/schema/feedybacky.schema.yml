@@ -1,0 +1,7 @@
+feedybacky.settings:
+  type: config_object
+  label: 'Feedybacky config'
+  mapping:
+    url:
+      type: text
+      label: 'URL to the address where feedback data is supposed to be sent to.'
