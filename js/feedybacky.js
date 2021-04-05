@@ -86,6 +86,13 @@ class Feedybacky {
 		this.params.emailField = this.params.emailField || false;
 		this.params.expandMessageLink = this.params.expandMessageLink || false;
 		
+		if(this.params.emailField !== true) {
+			this.params.emailField = false;
+		}
+		if(this.params.expandMessageLink !== true) {
+			this.params.expandMessageLink = false;
+		}
+		
 		if(typeof this.params.adBlockDetected === 'undefined') {
 			let adBlockBait = document.createElement('div');
 			adBlockBait.innerHTML = '&nbsp;';
