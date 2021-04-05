@@ -1,4 +1,5 @@
 const feedybackyScriptName = 'feedybacky.min.js';
+const feedybackyPortalEndpoint = 'https://api.feedybacky.com/issue';
 
 const checkboxVisibleOption = 'visible';
 const checkboxAutoEnableOption = 'autoEnable';
@@ -117,6 +118,10 @@ class Feedybacky {
             document.getElementById('feedybacky-container-hide-button').addEventListener('click', e => {
                 this.showMinimalContainer();
             });
+			
+			if(this.params.apiKey && this.params.projectSymbol && !this.params.onSubmitUrl) {
+				this.params.onSubmitUrl = feedybackyPortalEndpoint;
+			}
     
             if(this.params.onSubmit) {
                 document.getElementById('feedybacky-form').addEventListener('submit', this.params.onSubmit);
@@ -367,6 +372,14 @@ class Feedybacky {
 		
 		if(this.prefix) {
 			payload.prefix = this.prefix;
+		}
+		
+		if(this.params.apiKey) {
+			payload.apiKey = this.params.apiKey;
+		}
+		
+		if(this.params.projectSymbol) {
+			payload.projectSymbol = this.params.projectSymbol;
 		}
 		
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');

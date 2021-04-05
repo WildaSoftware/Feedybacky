@@ -33,6 +33,14 @@ var feedybacky = new Feedybacky('feedybacky-container', {
 	onSubmitUrl: url
 });
 ```
+
+If you want to pair plugin with Feedybacky portal, you need to fetch your Feedybacky API key and create a project in the portal to retrieve its symbol. Then you can use it on your WWW site in order to send request to Feedybacky portal.
+```javascript
+var feedybacky = new Feedybacky('feedybacky-container', {
+	apiKey: 'your Feedybacky API key',
+	projectSymbol: 'your Feedybacky project symbol',
+});
+```
 #### Angular ####
 
 1. Add a DOM element to your root `.html` template (outside `<app-root></app-root>`):
@@ -130,6 +138,10 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
+
+`apiKey` - API key generated for your Feedybacky account in the portal. You can retrieve it from the portal on the edit account view under the "API key" section. Setting this parameter is obligatory if you want to send request to the Feedybacky portal. If this and `projectSymbol` are set, the value of `onSubmitUrl` is replaced by the official Feedybacky portal endpoint.
+
+`projectSymbol` - the symbol of a project created in Feedybacky portal. You can fetch it from the portal on the project config view. Setting this parameter is obligatory if you want to send request to the Feedybacky portal. If this and `apiKey` are set, the value of `onSubmitUrl` is replaced by the official Feedybacky portal endpoint.
 
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
