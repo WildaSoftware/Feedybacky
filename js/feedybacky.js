@@ -21,6 +21,10 @@ const orderSendPart = 'send';
 const orderPoweredPart = 'powered';
 const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart];
 
+const alertTypeSuccess = 'success';
+const alertTypeFailure = 'error';
+const alertTypePending = 'pending';
+
 class FeedybackyPayload {
 	
 	add(key, value) {
@@ -132,7 +136,7 @@ class Feedybacky {
                     
                     this.clearErrors();
                     if(this.validateForm()) {
-                    	this.prepareAndSendRequest();
+						this.prepareAndSendRequest();
                     	this.showMinimalContainer();
                     }
                 });
@@ -417,6 +421,8 @@ class Feedybacky {
 			payload.extraInfo = this.extraInfoFunction();
 		}
 		
+		this.showAlertContainer(alertTypePending);
+		
 		if(screenshotAllowed) {
             html2canvas(document.body, {
 				onrendered: canvas => {
@@ -435,7 +441,7 @@ class Feedybacky {
     }
 
     sendPostRequest(url, payload) {
-        fetch(url, {
+		fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -443,7 +449,7 @@ class Feedybacky {
             body: JSON.stringify(payload)
         }).then(response => {
 			if(response.status == 200 || response.status == 201) {
-                this.showAlertContainer(true);
+				this.showAlertContainer(alertTypeSuccess);
 				
 				if(this.onSubmitUrlSuccess) {
 					response.text().then(res => {
@@ -452,7 +458,7 @@ class Feedybacky {
 				}
             }
             else {
-                this.showAlertContainer(false);
+				this.showAlertContainer(alertTypeFailure);
 				
 				if(this.onSubmitUrlError) {
 					response.text().then(res => {
@@ -461,7 +467,7 @@ class Feedybacky {
 				}
             }
         }).catch(e => {
-            this.showAlertContainer(false, e);
+            this.showAlertContainer(alertTypeFailure, e);
         })
     }
 	
@@ -515,27 +521,34 @@ class Feedybacky {
         document.getElementById('feedybacky-form-description').focus();
     }
 
-    showAlertContainer(isSuccess, status) {
+    showAlertContainer(alertType, status) {
 		if(!this.params.alertAfterRequest) {
 			return;
 		}
 		
     	this.alertContainer.classList = '';
     	
-        if(isSuccess) {
+        if(alertType === alertTypeSuccess) {
             this.alertContainer.innerHTML = this.params.texts.requestSuccess;
-            this.alertContainer.classList = 'feedybacky-alert-container-success';
+            this.alertContainer.classList = 'feedybacky-alert-container-success feedybacky-alert-container-animated';
         } 
-        else {
+        else if(alertType === alertTypeFailure) {
             this.alertContainer.innerHTML = this.params.texts.requestFail;
             this.alertContainer.innerHTML += ' ' + (this.defaultVars.texts['error' + status] || 'error ' + status);
-            this.alertContainer.classList = 'feedybacky-alert-container-failure';
+            this.alertContainer.classList = 'feedybacky-alert-container-failure feedybacky-alert-container-animated';
         }
+		else if(alertType === alertTypePending) {
+			this.alertContainer.innerHTML = this.params.texts.requestPending;
+            this.alertContainer.classList = 'feedybacky-alert-container-pending';
+		}
+		
         this.alertContainer.style.display = 'inline-block';
         
-        setTimeout(() => {
-            this.alertContainer.style.display = 'none';
-        }, 3000);
+		if(alertType !== alertTypePending) {
+			setTimeout(() => {
+				this.alertContainer.style.display = 'none';
+			}, 3000);
+		}
     }
 
     importDependencies() {

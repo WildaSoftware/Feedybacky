@@ -35,11 +35,6 @@
 	right: 0;
 	padding: 10px;
 	z-index: 10000;
-
-	-webkit-animation-name: show; /* Safari 4.0 - 8.0 */
-	-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-	animation-name: show;
-	animation-duration: 1s;
 }
 
 .feedybacky-alert-container-success {
@@ -54,6 +49,19 @@
 	color: #721c24;
 }
 
+.feedybacky-alert-container-pending {
+	background-color: #869cc4;
+    border-color: #869cc4;
+    color: #162a8d;
+}
+
+.feedybacky-alert-container-animated {
+	-webkit-animation-name: show; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+	animation-name: show;
+	animation-duration: 1s;
+}
+
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes show {
 	from {right: -500px}
@@ -62,6 +70,16 @@
 /* Standard syntax */
 @keyframes show {
 	from {right: -500px}
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes show-immediately {
+	from {right: -100px}
+}
+
+/* Standard syntax */
+@keyframes show-immediately {
+	from {right: -100px}
 }
 
 #feedybacky-container-extended {
