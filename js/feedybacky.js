@@ -424,8 +424,11 @@ class Feedybacky {
 		this.showAlertContainer(alertTypePending);
 		
 		if(screenshotAllowed) {
+			let currentScrollPos = window.pageYOffset;
+			
             html2canvas(document.body, {
 				onrendered: canvas => {
+					window.scrollTo(0, currentScrollPos);
 					payload.image = canvas.toDataURL('image/png');
 					this.handleBeforeSubmitCallback(payload);
 					this.sendPostRequest(this.params.onSubmitUrl, payload);
