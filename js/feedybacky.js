@@ -13,17 +13,22 @@ const orderExplanationPart = 'explanation';
 const orderScreenshotCheckboxPart = 'screenshot';
 const orderMetadataCheckboxPart = 'metadata';
 const orderHistoryCheckboxPart = 'history';
+const orderTermsAcceptedCheckboxPart = 'termsAccepted';
+const orderPersonalDataAcceptedCheckboxPart = 'personalDataAccepted';
 const orderNotePart = 'note';
-const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart];
+const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
 
 const orderTitlePart = 'title';
 const orderSendPart = 'send';
 const orderPoweredPart = 'powered';
-const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart];
+const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
 
 const alertTypeSuccess = 'success';
 const alertTypeFailure = 'error';
 const alertTypePending = 'pending';
+
+const termsAcceptedStorageItem = 'feedybacky_termsDataAccepted';
+const personalDataAcceptedStorageItem = 'feedybacky_personalDataAccepted';
 
 class FeedybackyPayload {
 	
@@ -81,7 +86,7 @@ class Feedybacky {
 			this.params.order = newOrderSplit.join(',');
 		}
 		else {
-			this.params.order = 'description,message,email,explanation,screenshot,metadata,history,note';
+			this.params.order = 'description,message,email,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
 		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
@@ -113,9 +118,16 @@ class Feedybacky {
 				document.body.removeChild(adBlockBait);
 			}, 60);
 		}
+		
+		this.params.termsUrl = this.params.termsUrl || '#';
+		this.params.privacyPolicyUrl = this.params.privacyPolicyUrl || '#';
     	
     	this.loadMessages().then(() => {
-            this.initMinifiedContainer();
+            if(this.params.apiKey && this.params.projectSymbol && !this.params.onSubmitUrl) {
+				this.params.onSubmitUrl = feedybackyPortalEndpoint;
+			}
+			
+			this.initMinifiedContainer();
             this.initExtendedContainer();
             this.initAlertContainer();
 
@@ -123,10 +135,6 @@ class Feedybacky {
                 this.showMinimalContainer();
             });
 			
-			if(this.params.apiKey && this.params.projectSymbol && !this.params.onSubmitUrl) {
-				this.params.onSubmitUrl = feedybackyPortalEndpoint;
-			}
-    
             if(this.params.onSubmit) {
                 document.getElementById('feedybacky-form').addEventListener('submit', this.params.onSubmit);
             }
@@ -270,23 +278,45 @@ class Feedybacky {
 		
 		let screenshotCheckboxHtml = '';
         if(this.params.screenshotField == checkboxVisibleOption) {
-        	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true" class="${this.params.classes.screenshotCheckbox}"/>${this.params.texts.screenshot}</label>`;
+        	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true" class="${this.params.classes.screenshot}"/>${this.params.texts.screenshot}</label>`;
         }
         
         let metadataCheckboxHtml = '';
         if(this.params.metadataField == checkboxVisibleOption) {
-        	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true" class="${this.params.classes.metadataCheckbox}"/>${this.params.texts.metadata}</label>`;
+        	metadataCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-metadata-allowed" checked="true" class="${this.params.classes.metadata}"/>${this.params.texts.metadata}</label>`;
         }
 		
 		let historyCheckboxHtml = '';
 		if(this.params.historyField == checkboxVisibleOption) {
-			historyCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-history-allowed" checked="true" class="${this.params.classes.historyCheckbox}"/>${this.params.texts.history}</label>`;
+			historyCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-history-allowed" checked="true" class="${this.params.classes.history}"/>${this.params.texts.history}</label>`;
 		}
         
         let additionalDataInformationHtml = '';
         if(screenshotCheckboxHtml || metadataCheckboxHtml || historyCheckboxHtml) {
         	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description" class="${this.params.classes.explanation}">${this.params.texts.additionalDataInformation}</div>`;
         }
+		
+		const loweredOnSubmitUrl = this.params.onSubmitUrl.toLowerCase();
+		const loweredFeedybackyPortalEndpoint = feedybackyPortalEndpoint.toLowerCase();
+		let termsAgreementHtml = '';
+		let personalDataAgreementHtml = '';
+		if(loweredOnSubmitUrl.includes(loweredFeedybackyPortalEndpoint) && loweredFeedybackyPortalEndpoint.includes(loweredOnSubmitUrl)) {
+			const termsCheckedPart = localStorage.getItem(termsAcceptedStorageItem) > 0 ? 'checked="true"' : '';
+			const termsAcceptedText = this.params.texts.termsAccepted.replace('{termsUrl}', this.params.termsUrl);
+			
+			termsAgreementHtml = `
+				<label><input type="checkbox" id="feedybacky-form-terms-accepted" ${termsCheckedPart} class="${this.params.classes.termsAccepted}"/>${termsAcceptedText}</label>
+				<div id="feedybacky-form-terms-accepted-error-message" class="feedybacky-error-message ${this.params.classes.termsAccepted}" ></div>
+			`;
+			
+			const personalDataCheckedPart = localStorage.getItem(personalDataAcceptedStorageItem) > 0 ? 'checked="true"' : '';
+			const personalDataAcceptedText = this.params.texts.personalDataAccepted.replace('{privacyPolicyUrl}', this.params.privacyPolicyUrl);
+			
+			personalDataAgreementHtml = `
+				<label><input type="checkbox" id="feedybacky-form-personal-data-accepted" ${personalDataCheckedPart} class="${this.params.classes.personalDataAccepted}"/>${personalDataAcceptedText}</label>
+				<div id="feedybacky-form-personal-data-accepted-error-message" class="feedybacky-error-message ${this.params.classes.personalDataAccepted}" ></div>
+			`;
+		}
 		
 		let noteHtml = '';
 		if(this.params.texts.note) {
@@ -301,6 +331,8 @@ class Feedybacky {
 		extendedParts[orderScreenshotCheckboxPart] = `${screenshotCheckboxHtml}`;
 		extendedParts[orderMetadataCheckboxPart] = `${metadataCheckboxHtml}`;
 		extendedParts[orderHistoryCheckboxPart] = `${historyCheckboxHtml}`;
+		extendedParts[orderTermsAcceptedCheckboxPart] = `${termsAgreementHtml}`;
+		extendedParts[orderPersonalDataAcceptedCheckboxPart] = `${personalDataAgreementHtml}`;
 		extendedParts[orderNotePart] = `${noteHtml}`;
 		
 		let variablesInRequiredOrder = '';
@@ -344,6 +376,8 @@ class Feedybacky {
     validateForm() {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
 		let emailInput = document.getElementById('feedybacky-form-email');
+		let termsAcceptedInput = document.getElementById('feedybacky-form-terms-accepted');
+		let personalDataAcceptedInput = document.getElementById('feedybacky-form-personal-data-accepted');
 		
     	let isValidated = true;
     	
@@ -356,6 +390,16 @@ class Feedybacky {
     		document.getElementById('feedybacky-form-email-error-message').innerText = this.params.texts.emailErrorEmpty;
     		isValidated = false;
     	}
+		
+		if(termsAcceptedInput && !termsAcceptedInput.checked) {
+			document.getElementById('feedybacky-form-terms-accepted-error-message').innerText = this.params.texts.termsAcceptedErrorNotChecked;
+			isValidated = false;
+		}
+		
+		if(personalDataAcceptedInput && !personalDataAcceptedInput.checked) {
+			document.getElementById('feedybacky-form-personal-data-accepted-error-message').innerText = this.params.texts.personalDataAcceptedErrorNotChecked;
+			isValidated = false;
+		}
     	
     	return isValidated;
     }
@@ -389,10 +433,21 @@ class Feedybacky {
 		let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
         let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
 		let historyAllowedInput = document.getElementById('feedybacky-form-history-allowed');
+		let termsAcceptedInput = document.getElementById('feedybacky-form-terms-accepted');
+		let personalDataAcceptedInput = document.getElementById('feedybacky-form-personal-data-accepted');
         
         const screenshotAllowed = screenshotAllowedInput ? screenshotAllowedInput.checked : (this.params.screenshotField == checkboxAutoEnableOption);
         const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption);
 		const historyAllowed = historyAllowedInput ? historyAllowedInput.checked : (this.params.historyField == checkboxAutoEnableOption);
+		payload.termsAccepted = termsAcceptedInput ? termsAcceptedInput.checked : false;
+		payload.personalDataAccepted = personalDataAcceptedInput ? personalDataAcceptedInput.checked : false;
+		
+		if(payload.termsAccepted) {
+			localStorage.setItem(termsAcceptedStorageItem, 1);
+		}
+		if(payload.personalDataAccepted) {
+			localStorage.setItem(personalDataAcceptedStorageItem, 1);
+		}
 
         if(metadataAllowed) {
             payload.agent = navigator.userAgent;

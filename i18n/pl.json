@@ -7,6 +7,8 @@
     "screenshot": "Załącz zrzut ekranu aktualnie otwartej strony (dotyczy wyłącznie zawartości - pomija zakładki i ikony).",
     "metadata": "Załącz informacje o przeglądarce i sesji.",
 	"history": "Załącz informacje o ostatnich operacjach na stronie przed wysłaniem żądania.",
+	"termsAccepted": "Oświadczam, że akceptuję <a href=\"{termsUrl}\" target=\"_blank\">Regulamin</a>.",
+	"personalDataAccepted": "Oświadczam, że jestem uprawniony/a do wyrażenia zgody na przetwarzanie danych osobowych objętych zgłoszeniem. Wyrażam zgodę na przetwarzanie danych osobowych objętych zgłoszeniem na warunkach określonych w <a href=\"{privacyPolicyUrl}\" target=\"_blank\">Polityce Prywatności</a>.",
 	"note": "",
     "send": "Wyślij",
     "powered": "Zgłoszenia możliwe dzięki",
@@ -17,5 +19,7 @@
     "error500": "Wewnętrzny błąd serwera.",
     "descriptionErrorEmpty": "Opis zgłoszenia jest wymagany!",
 	"email": "Twój adres e-mail:",
-    "emailErrorEmpty": "Adres e-mail jest wymagany!"
+    "emailErrorEmpty": "Adres e-mail jest wymagany!",
+	"termsAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky.",
+	"personalDataAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky."
 }

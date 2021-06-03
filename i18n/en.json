@@ -7,6 +7,8 @@
     "screenshot": "Attach a screenshot of the currently opened page (concerns content only - ignores browser shortcuts and icons).",
     "metadata": "Include browser and session information.",
 	"history": "Include information about last operations on page before sending a request.",
+	"termsAccepted": "I declare that I accept the <a href=\"{termsUrl}\" target=\"_blank\">Terms and Conditions</a>.",
+	"personalDataAccepted": "I declare that I am authorized to express consent for processing personal data included in the request. I agree with personal data processing included in the request in terms of rules defined in <a href=\"{privacyPolicyUrl}\" target=\"_blank\">Privacy Policy</a>.",
 	"note": "",
     "send": "Send",
     "powered": "Powered by",
@@ -17,5 +19,7 @@
     "error500": "Internal server error.",
     "descriptionErrorEmpty": "Request's description is required!",
     "email": "Your e-mail address:",
-    "emailErrorEmpty": "E-mail address is required!"
+    "emailErrorEmpty": "E-mail address is required!",
+	"termsAcceptedErrorNotChecked": "You have to accept this because the request would be sent to Feedybacky portal.",
+	"personalDataAcceptedErrorNotChecked": "You have to accept this because the request would be sent to Feedybacky portal."
 }
