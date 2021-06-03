@@ -34,11 +34,13 @@ var feedybacky = new Feedybacky('feedybacky-container', {
 });
 ```
 
-If you want to pair plugin with Feedybacky portal, you need to fetch your Feedybacky API key and create a project in the portal to retrieve its symbol. Then you can use it on your WWW site in order to send request to Feedybacky portal.
+If you want to pair plugin with Feedybacky portal, you need to fetch your Feedybacky API key and create a project in the portal to retrieve its symbol. Then you can use it on your WWW site in order to send request to Feedybacky portal. You should also provide URLs to terms and conditions and privacy policy of site, on which you place the plugin. The "legal" checkboxes are not checked by default but if a user checks them, the information in local storage is saved so these checkboxes would be checked by default later.
 ```javascript
 var feedybacky = new Feedybacky('feedybacky-container', {
 	apiKey: 'your Feedybacky API key',
 	projectSymbol: 'your Feedybacky project symbol',
+	termsUrl: 'link to terms and conditions',
+	privacyPolicyUrl: 'link t privacy policy'
 });
 ```
 #### Angular ####
@@ -143,6 +145,10 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 
 `projectSymbol` - the symbol of a project created in Feedybacky portal. You can fetch it from the portal on the project config view. Setting this parameter is obligatory if you want to send request to the Feedybacky portal. If this and `apiKey` are set, the value of `onSubmitUrl` is replaced by the official Feedybacky portal endpoint.
 
+`termsUrl` - URL for terms and conditions document of a site. It is used when the plugin would send the request to official Feedybacky portal. Link would be opened in a new tab. Default value is `#`.
+
+`privacyPolicyUrl` - URL for privacy policy document of a site. It is used when the plugin would send the request to official Feedybacky portal. Link would be opened in a new tab. Default value is `#`.
+
 `texts` - JSON object with custom messages in different parts of the plugin. It can contain following keys:
 
 * **tooltip** - information visible after placing the cursor on the minified div with the plugin.
@@ -152,16 +158,21 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **screenshot** - label for the checkbox to accept sending a screenshot.
 * **metadata** - label for the checkbox to accept sending metadata.
 * **history** - label for the checkbox to accept sending event history.
+* **termsAccepted** - label for the checkbox to accept terms and conditions (visible when the plugin is paired with the Feedybacky portal).
+* **personalDataAccepted** - label for the checkbox to confirm personal data processing (visible when the plugin is paired with the Feedybacky portal).
 * **note** - label for the text between checkboxes and send button (empty by default and then not visible).
 * **send** - label for the "Send" button.
 * **requestSuccess** - message visible after successful POST request sending.
 * **requestFail** - message visible after unsuccessful POST request sending.
+* **requestPending** - message visible during sending a POST request.
 * **powered** - message on bottom of the plugin screen.
 * **error404** - message after a situation where an 404 error occurred.
 * **error500** - message after a situation where an 500 error occurred.
 * **descriptionErrorEmpty** - error message for the empty description field.
 * **email** - label before the e-mail address field.
 * **emailErrorEmpty** - error message for the empty e-mail address field.
+* **termsAcceptedErrorNotChecked** - error message when terms and conditions have been not accepted while the plugin is paired with the Feedybacky portal.
+* **personalDataAcceptedErrorNotChecked** - error message when user has not confirm information about personal data processing while the plugin is paired with the Feedybacky portal.
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
@@ -198,9 +209,9 @@ beforeSubmit: (payload) => {
 
 `side` - optional parameter for determining side of the Feedybacky. Default value is `right` and means that the plugin is visible on the right side of the website. Another possible value is `left`.
 
-`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,explanation,screenshot,metadata,history,note"`. 
+`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
 
-`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, explanation, screenshot, metadata, history, note, send, powered`.
+`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
 
 `expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
 

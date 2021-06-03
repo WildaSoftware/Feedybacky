@@ -1,3 +1,14 @@
+Version 2.0 (2021-06-03)
+========================
+
+1. Params for official integration introduced - "apiKey", "projectSymbol", "termsUrl" and "privacyPolicyUrl".
+2. When the plugin is paired with official Feedybacky portal, the additional legal checkboxes are displayed.
+3. During sending a request, the message about operation is displayed.
+4. Fixed bug - "emailField" and "expandMessageLink " now are interpreted correctly if "false" would be typed as string.
+5. Fixed bug - after sending a request, a site is not scrolled to the top automatically.
+6. Official logo of Feedybacky has been changed.
+7. Default CSS adjusted in order to display more checkboxes properly.
+
 Version 1.5 (2020-03-14)
 ========================
 
