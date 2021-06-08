@@ -124,7 +124,7 @@ function fyby__handle_menu_view(){
 	echo fyby__generate_input('apiKey', FYBY_OPTION__APIKEY, 'text', 'API key');
 	echo fyby__generate_input('projectSymbol', FYBY_OPTION__PROJECTSYMBOL, 'text', 'Project symbol');
 	echo fyby__generate_input('termsUrl', FYBY_OPTION__TERMSURL, 'text', 'URL to terms and conditions');
-	echo fyby__generate_input('termsUrl', FYBY_OPTION__PRIVACYPOLICYURL, 'text', 'URL to privacy policy');
+	echo fyby__generate_input('privacyPolicyUrl', FYBY_OPTION__PRIVACYPOLICYURL, 'text', 'URL to privacy policy');
 	echo fyby__generate_input('extraInfo', FYBY_OPTION__EXTRAINFO, 'textarea', 'Extra Info');
 	echo fyby__generate_input('emailField', FYBY_OPTION__EMAILFIELD, 'checkbox', 'Email Field');
 	echo fyby__generate_input('screenshotField', FYBY_OPTION__SCREENSHOTFIELD, 'select', 'Screenshot Field', ['visible' => 'Visible', 'autoEnable' => 'Auto Enable','autoDisable' => 'Auto Disable']);
@@ -210,7 +210,7 @@ function fyby__init_plugin() {
 	}
 	
 	if(!empty(get_option(FYBY_OPTION__PRIVACYPOLICYURL))) {
-		$params[] = 'termsUrl: "'.get_option(FYBY_OPTION__PRIVACYPOLICYURL).'"';
+		$params[] = 'privacyPolicyUrl: "'.get_option(FYBY_OPTION__PRIVACYPOLICYURL).'"';
 	}
 
 	if(!empty(get_option(FYBY_OPTION__EXTRAINFO))) {
