@@ -610,7 +610,7 @@ class Feedybacky {
 	
 	saveVisitedUrl() {
 		const url = window.location.href;
-		this.visitedUrls.push(url);
+		this.visitedUrls.push({ timestamp: Date.now(), url });
 		this.visitedUrls = this.visitedUrls.slice(Math.max(this.visitedUrls.length - this.urlTrackingLimit, 0));
 		localStorage.setItem(visitedUrlsStorageItem, JSON.stringify(this.visitedUrls));
 	}
