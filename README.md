@@ -17,6 +17,8 @@ Of course, you can also install Feedybacky as NPM package:
 
 If you want to modify or build Feedybacky by yourself, you should install NPM dependencies by running `npm install` command, install `gulp-cli` globally (`npm install -g gulp-cli`) and run `gulp` in Feedybacky directory (`npm install gulp`). Afterwards, you can copy following directories to the destinated folder: `css`, `dependencies`, `i18n`, `img`, `js`.
 
+Lastly, you can also fetch Feedybacky via CDN - if you would like to use the plugin this way, please check example page `examples/09-cdn.html` to display an example.
+
 ### How to include Feedybacky in my web page? ###
 
 #### Standard way ####
@@ -140,6 +142,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
+* **visitedUrls** - array of objects with last N visited URLs withing the site. Available only if the parameter `urlTracking` is enabled.
 
 `apiKey` - API key generated for your Feedybacky account in the portal. You can retrieve it from the portal on the edit account view under the "API key" section. Setting this parameter is obligatory if you want to send request to the Feedybacky portal. If this and `projectSymbol` are set, the value of `onSubmitUrl` is replaced by the official Feedybacky portal endpoint.
 
@@ -185,6 +188,10 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 `historyField` - optional parameter for defining behaviour of the plugin during processing event history. The default value is `"visible"` and other possibilities are similar as for `screenshotField` above. Captured event types are: `change`, `click`, `focus`, `reset`, `submit` and there are omitted for Feedybacky form.
 
 `historyLimit` - number of last event calls on the page which would be added to event history. The default value is not set what means that all captured operations would be sent.  
+
+`urlTracking` - optional parameter for maintenance of visited URLs history in local storage for a domains of your site. If enabled, it also attaches last N entries of the history to request while it is sending. It is a boolean parameter and default value is `true`.
+
+`urlTrackingLimit` - optional parameter for limitting a history of visited URLs. It is used only if `urlTracking` is enabled. It can be useful to find a compromise between depth of stack trace and memory usage of local storage. Default value is `15`.
 
 `beforeSubmit` - optional callback function with one parameter - instance of `FeedybackyPayload` object containing whole payload ready to sent. This callback is invoked before sending a request to endpoint defined by `onSubmitUrl` parameter. It can be used to make some preparations before sending (for example, show loader animation) or add some additional fields to payload, such as authentication key. The last one can be achieved by `add` function invoked inside `beforeSubmit`, e.g.:
 

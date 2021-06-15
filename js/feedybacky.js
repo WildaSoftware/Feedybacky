@@ -29,6 +29,7 @@ const alertTypePending = 'pending';
 
 const termsAcceptedStorageItem = 'feedybacky_termsDataAccepted';
 const personalDataAcceptedStorageItem = 'feedybacky_personalDataAccepted';
+const visitedUrlsStorageItem = 'feedybacky_visitedUrls';
 
 class FeedybackyPayload {
 	
@@ -50,8 +51,22 @@ class Feedybacky {
 		this.prefix = params.prefix || null;
 		this.onSubmitUrlSuccess = params.onSubmitUrlSuccess || null;
 		this.onSubmitUrlError = params.onSubmitUrlError || null;
+		
 		this.eventHistory = [];
 		this.historyLimit = params.historyLimit || null;
+		
+		this.params.urlTracking = this.params.urlTracking;
+		if(this.params.urlTracking === undefined) {
+			this.params.urlTracking = true;
+		}
+		else if(this.params.urlTracking === 'false') {
+			this.params.urlTracking = false;
+		}
+		
+		if(this.params.urlTracking) {
+			this.urlTrackingLimit = params.urlTrackingLimit || 15;		
+			this.initUrlTracking();
+		}
 		
 		this.params.classes = this.params.classes || {};
 		for(let i = 0; i < containerParts.length; ++i) {
@@ -472,6 +487,10 @@ class Feedybacky {
 			payload.history = this.eventHistory;
 		}
 		
+		if(this.params.urlTracking) {
+			payload.visitedUrls = this.visitedUrls;
+		}
+		
 		if(this.extraInfoFunction) {
 			payload.extraInfo = this.extraInfoFunction();
 		}
@@ -560,6 +579,40 @@ class Feedybacky {
 				}
 			});
 		}
+	}
+	
+	initUrlTracking() {
+		this.visitedUrls = localStorage.getItem(visitedUrlsStorageItem) || '[]';
+		this.visitedUrls = JSON.parse(this.visitedUrls);
+		this.saveVisitedUrl();
+		
+		((history) => {
+			const pushState = history.pushState;
+			history.pushState = (state, ...args) => {
+				if(typeof history.onpushstate == "function") {
+					history.onpushstate({state: state});
+				}
+				
+				const result = pushState.call(history, state, ...args);
+				this.saveVisitedUrl();
+				return result;
+			}
+		})(window.history);
+		
+		window.addEventListener('popstate', (e) => {
+			this.saveVisitedUrl();
+		});
+		
+		window.addEventListener('hashchange', (e) => {
+			this.saveVisitedUrl();
+		});
+	}
+	
+	saveVisitedUrl() {
+		const url = window.location.href;
+		this.visitedUrls.push(url);
+		this.visitedUrls = this.visitedUrls.slice(Math.max(this.visitedUrls.length - this.urlTrackingLimit, 0));
+		localStorage.setItem(visitedUrlsStorageItem, JSON.stringify(this.visitedUrls));
 	}
 	
 	handleBeforeSubmitCallback(payload) {
