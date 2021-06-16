@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Feedybacky
  * Plugin URI: https://github.com/WildaSoftware/Feedybacky
- * Description: Feedybacky's plugin wrapper for Wordpress. The plugin can be used to facilitate feedback gathering from a web site. This version based on version 1.5 of the original plugin.
- * Version: 1.0
+ * Description: Feedybacky's plugin wrapper for Wordpress. The plugin can be used to facilitate feedback gathering from a web site. This version based on version 2.1 of the original plugin.
+ * Version: 1.1
  * Author: Wilda Software
  * Author URI: http://wildasoftware.pl/
  **/
@@ -116,7 +116,7 @@ function fyby__handle_menu_view(){
 	
 	echo '<div id="feedybacky-config-page">';
 	 
-	echo '<img id="feedybacky-admin-logo" src="'.WP_PLUGIN_URL.'/feedybacky/assets/logo_feedybacky.png'.'" style="width: 100px"/><div id="feedybacky-admin-header" style="font-weight: bold; font-size: 1.2rem">Plugin config</div>';
+	echo '<img id="feedybacky-admin-logo" src="'.WP_PLUGIN_URL.'/feedybacky/assets/logo_feedybacky.png"/><div id="feedybacky-admin-header" style="font-weight: bold; font-size: 1.2rem">Plugin config</div>';
 	echo '<form id="feedybacky-config" method="post">';
 	
 	echo '<table class="form-table" role="presentation">';

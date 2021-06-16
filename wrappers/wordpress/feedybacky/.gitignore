@@ -1,6 +1,6 @@
 *
 !.gitignore
-!assets/*
+!assets
 !feedybacky.php
 !install.sh
 !LICENSE

@@ -1,0 +1,19 @@
+#feedybacky-config-page {
+	background-color: #f5f5f5;
+	color: #1e1313;
+}
+
+#feedybacky-admin-header {
+	font-weight: bold;
+	font-size: 2em;
+	margin: 1em 0;
+}
+
+.feedybacky-config-field {
+	margin: 0.5em 0;
+}
+
+#feedybacky-admin-logo {
+	width: 300px;
+	margin-top: 0.67em;
+}
