@@ -311,7 +311,7 @@ class Feedybacky {
         	additionalDataInformationHtml = `<div id="feedybacky-container-additional-description" class="${this.params.classes.explanation}">${this.params.texts.additionalDataInformation}</div>`;
         }
 		
-		const loweredOnSubmitUrl = this.params.onSubmitUrl.toLowerCase();
+		const loweredOnSubmitUrl = this.params.onSubmitUrl ? this.params.onSubmitUrl.toLowerCase() : '';
 		const loweredFeedybackyPortalEndpoint = feedybackyPortalEndpoint.toLowerCase();
 		let termsAgreementHtml = '';
 		let personalDataAgreementHtml = '';

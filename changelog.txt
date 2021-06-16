@@ -3,6 +3,11 @@ Version 2.1
 
 1. Introducing URL tracking.
 
+Version 2.0.1 (2021-06-03)
+========================
+
+Small bug fixes.
+
 Version 2.0 (2021-06-03)
 ========================
 

@@ -28,6 +28,12 @@ const FYBY_OPTION__ORDER = 'fyby_option__order';
 const FYBY_OPTION__EXPANDMESSAGELINK = 'fyby_option__expandmessagelink';
 const FYBY_OPTION__TEXTS = 'fyby_option__texts';
 const FYBY_OPTION__CLASSES = 'fyby_option__classes';
+const FYBY_OPTION__APIKEY = 'fyby_option__apikey';
+const FYBY_OPTION__PROJECTSYMBOL = 'fyby_option__projectsymbol';
+const FYBY_OPTION__TERMSURL = 'fyby_option__termsurl';
+const FYBY_OPTION__PRIVACYPOLICYURL = 'fyby_option__privacypolicyurl';
+const FYBY_OPTION__URLTRACKING = 'fyby_option__urltracking';
+const FYBY_OPTION__URLTRACKINGLIMIT = 'fyby_option__urltrackinglimit';
 
 function fyby__setup_menu() {
 	add_options_page('Feedybacky', 'Feedybacky', 'manage_options', 'feedybacky-config', 'fyby__handle_menu_view' );
@@ -83,6 +89,10 @@ function fyby__handle_menu_view(){
 		update_option(FYBY_OPTION__LANGUAGE, $data['language']);
 		update_option(FYBY_OPTION__ONSUBMIT, str_replace('\\', '', $data['onSubmit']));
 		update_option(FYBY_OPTION__ONSUBMITURL, $data['onSubmitUrl']);
+		update_option(FYBY_OPTION__APIKEY, $data['apiKey']);
+		update_option(FYBY_OPTION__PROJECTSYMBOL, $data['projectSymbol']);
+		update_option(FYBY_OPTION__TERMSURL, $data['termsUrl']);
+		update_option(FYBY_OPTION__PRIVACYPOLICYURL, $data['privacyPolicyUrl']);
 		update_option(FYBY_OPTION__EXTRAINFO, str_replace('\\', '', $data['extraInfo']));
 		update_option(FYBY_OPTION__EMAILFIELD, !empty($data['emailField']));
 		update_option(FYBY_OPTION__SCREENSHOTFIELD, $data['screenshotField']);
@@ -100,11 +110,13 @@ function fyby__handle_menu_view(){
 		update_option(FYBY_OPTION__EXPANDMESSAGELINK, !empty($data['expandMessageLink']));
 		update_option(FYBY_OPTION__TEXTS, str_replace('\\', '', $data['texts']));
 		update_option(FYBY_OPTION__CLASSES, str_replace('\\', '', $data['classes']));
+		update_option(FYBY_OPTION__URLTRACKING, !empty($data['urlTracking']));
+		update_option(FYBY_OPTION__URLTRACKINGLIMIT, $data['urlTrackingLimit']);
 	}
 	
 	echo '<div id="feedybacky-config-page">';
 	 
-	echo '<img id="feedybacky-admin-logo" src="'.WP_PLUGIN_URL.'/feedybacky/assets/logo_feedybacky.png'.'"/><div id="feedybacky-admin-header">Plugin config</div>';
+	echo '<img id="feedybacky-admin-logo" src="'.WP_PLUGIN_URL.'/feedybacky/assets/logo_feedybacky.png'.'" style="width: 100px"/><div id="feedybacky-admin-header" style="font-weight: bold; font-size: 1.2rem">Plugin config</div>';
 	echo '<form id="feedybacky-config" method="post">';
 	
 	echo '<table class="form-table" role="presentation">';
@@ -113,12 +125,18 @@ function fyby__handle_menu_view(){
 	echo fyby__generate_input('language', FYBY_OPTION__LANGUAGE, 'text', 'Language');
 	echo fyby__generate_input('onSubmit', FYBY_OPTION__ONSUBMIT, 'textarea', 'On Submit');
 	echo fyby__generate_input('onSubmitUrl', FYBY_OPTION__ONSUBMITURL, 'text', 'On Submit URL');
+	echo fyby__generate_input('apiKey', FYBY_OPTION__APIKEY, 'text', 'API key');
+	echo fyby__generate_input('projectSymbol', FYBY_OPTION__PROJECTSYMBOL, 'text', 'Project symbol');
+	echo fyby__generate_input('termsUrl', FYBY_OPTION__TERMSURL, 'text', 'URL to terms and conditions');
+	echo fyby__generate_input('privacyPolicyUrl', FYBY_OPTION__PRIVACYPOLICYURL, 'text', 'URL to privacy policy');
 	echo fyby__generate_input('extraInfo', FYBY_OPTION__EXTRAINFO, 'textarea', 'Extra Info');
 	echo fyby__generate_input('emailField', FYBY_OPTION__EMAILFIELD, 'checkbox', 'Email Field');
 	echo fyby__generate_input('screenshotField', FYBY_OPTION__SCREENSHOTFIELD, 'select', 'Screenshot Field', ['visible' => 'Visible', 'autoEnable' => 'Auto Enable','autoDisable' => 'Auto Disable']);
 	echo fyby__generate_input('metadataField', FYBY_OPTION__METADATAFIELD, 'select', 'Metadata Field', ['visible' => 'Visible', 'autoEnable' => 'Auto Enable', 'autoDisable' => 'Auto Disable']);
 	echo fyby__generate_input('historyField', FYBY_OPTION__HISTORYFIELD, 'select', 'History Field', ['visible' => 'Visible', 'autoEnable' => 'Auto Enable', 'autoDisable' => 'Auto Disable']);
 	echo fyby__generate_input('historyLimit', FYBY_OPTION__HISTORYLIMIT, 'number', 'History Limit');
+	echo fyby__generate_input('urlTracking', FYBY_OPTION__URLTRACKING, 'checkbox', 'URL Tracking');
+	echo fyby__generate_input('urlTrackingLimit', FYBY_OPTION__URLTRACKINGLIMIT, 'number', 'URL Tracking Limit');
 	echo fyby__generate_input('beforeSubmit', FYBY_OPTION__BEFORESUBMIT, 'textarea', 'Before Submit');
 	echo fyby__generate_input('onSubmitUrlSuccess', FYBY_OPTION__ONSUBMITURLSUCCESS, 'textarea', 'On Submit Url Success');
 	echo fyby__generate_input('onSubmitUrlError', FYBY_OPTION__ONSUBMITURLERROR, 'textarea', 'On Submit Url Error');
@@ -166,7 +184,7 @@ function fyby__init_plugin() {
 	}
 
 	if(empty(get_option(FYBY_OPTION__ORDER))) {
-		update_option(FYBY_OPTION__order, 'description,message,email,explanation,screenshot,metadata,history,note');
+		update_option(FYBY_OPTION__order, 'description,message,email,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note');
 	}
 	 
 	echo '<div id="feedybacky-container"></div>';
@@ -183,6 +201,22 @@ function fyby__init_plugin() {
 
 	if(!empty(get_option(FYBY_OPTION__ONSUBMITURL))) {
 		$params[] = 'onSubmitUrl: "'.get_option(FYBY_OPTION__ONSUBMITURL).'"';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__APIKEY))) {
+		$params[] = 'apiKey: "'.get_option(FYBY_OPTION__APIKEY).'"';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__PROJECTSYMBOL))) {
+		$params[] = 'projectSymbol: "'.get_option(FYBY_OPTION__PROJECTSYMBOL).'"';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__TERMSURL))) {
+		$params[] = 'termsUrl: "'.get_option(FYBY_OPTION__TERMSURL).'"';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__PRIVACYPOLICYURL))) {
+		$params[] = 'privacyPolicyUrl: "'.get_option(FYBY_OPTION__PRIVACYPOLICYURL).'"';
 	}
 
 	if(!empty(get_option(FYBY_OPTION__EXTRAINFO))) {
@@ -207,6 +241,14 @@ function fyby__init_plugin() {
 
 	if(!empty(get_option(FYBY_OPTION__HISTORYLIMIT))) {
 		$params[] = 'historyLimit: "'.get_option(FYBY_OPTION__HISTORYLIMIT).'"';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__URLTRACKING))) {
+		$params[] = 'urlTracking: true';
+	}
+	
+	if(!empty(get_option(FYBY_OPTION__URLTRACKINGLIMIT))) {
+		$params[] = 'urlTrackingLimit: "'.get_option(FYBY_OPTION__URLTRACKINGLIMIT).'"';
 	}
 
 	if(!empty(get_option(FYBY_OPTION__BEFORESUBMIT))) {
