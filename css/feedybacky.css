@@ -87,12 +87,39 @@
 	border: 1px solid black;
 	position: fixed;
 	top: 100px;
-	width: 25%;
+	width: 90%;
+	font-size: 0.7rem;
 	min-width: 200px;
 	padding: 5px 10px 10px;
 	background-color: white;
 	z-index: 10000;
-	line-height: 1.5;
+	line-height: 1.5;	
+	overflow: auto;
+	max-height: 80%;
+}
+
+@media only screen and (min-width: 1201px) {
+	
+	#feedybacky-container-extended {
+		width: 25%;
+		font-size: 1rem;
+	}
+}
+
+@media only screen and (min-width: 1001px) and (max-width: 1200px) {
+	
+	#feedybacky-container-extended {
+		width: 33%;
+		font-size: 0.9rem;
+	}
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1000px) {
+	
+	#feedybacky-container-extended {
+		width: 50%;
+		font-size: 0.8rem;
+	}
 }
 
 #feedybacky-container-extended.expanded {
