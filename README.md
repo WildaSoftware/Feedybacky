@@ -137,6 +137,12 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **innerSize** - size of visible frame (result of `window.innerWidth` and `window.innerHeight`). Available only if the user accepted sending metadata information.
 * **colorDepth** - depth of the pixel on the screen (result of `screen.colorDepth`). Available only if the user accepted sending metadata information.
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
+* **cookieEnabled** - information about if an user enabled cookies (result of `navigator.cookieEnabled`). Available only if the user accepted sending metadata information.
+* **browserLanguage** - language in which a browser displays the site (result of `navigator.language`). Available only if the user accepted sending metadata information.
+* **referrer** - URL referrer from which the user comes to the site (result of `document.referrer`). Available only if the user accepted sending metadata information.
+* **pixelRatio** - ratio of device physical pixels to CSS pixels (result of `window.devicePixelRatio`). Available only if the user accepted sending metadata information.
+* **offsetX** - horizontally scrolled pixels (result of `window.pageXOffset`). Available only if the user accepted sending metadata information.
+* **offsetY** - vertically scrolled pixels (result of `window.pageYOffset`). Available only if the user accepted sending metadata information.
 * **history** - array of objects representing last N events called by the user (details below). Available only if the user accepted sending history information.
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).

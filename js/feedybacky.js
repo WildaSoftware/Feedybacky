@@ -504,6 +504,13 @@ class Feedybacky {
             if(screen.orientation) {
             	payload.orientation = screen.orientation.type;
         	}
+			
+			payload.cookieEnabled = navigator.cookieEnabled;
+			payload.browserLanguage = navigator.language;
+			payload.referrer = document.referrer;
+			payload.pixelRatio = window.devicePixelRatio;
+			payload.offsetX = window.pageXOffset;
+			payload.offsetY = window.pageYOffset;
         }
 		
 		if(historyAllowed) {
