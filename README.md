@@ -175,6 +175,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **requestFail** - message visible after unsuccessful POST request sending.
 * **requestPending** - message visible during sending a POST request.
 * **powered** - message on bottom of the plugin screen.
+* **error403** - message after a situation where an 403 error occurred.
 * **error404** - message after a situation where an 404 error occurred.
 * **error500** - message after a situation where an 500 error occurred.
 * **descriptionErrorEmpty** - error message for the empty description field.

@@ -159,7 +159,7 @@ class Feedybacky {
 			this.setTheme(this.theme);
 
             document.getElementById('feedybacky-container-hide-button').addEventListener('click', e => {
-                this.showMinimalContainer();
+                this.close();
             });
 			
             if(this.params.onSubmit) {
@@ -569,7 +569,7 @@ class Feedybacky {
 				}
             }
             else {
-				this.showAlertContainer(alertTypeFailure);
+				this.showAlertContainer(alertTypeFailure, response.status);
 				
 				if(this.onSubmitUrlError) {
 					response.text().then(res => {

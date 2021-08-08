@@ -15,6 +15,7 @@
     "requestSuccess": "Report sent successfully.",
     "requestFail": "Report not sent.",
 	"requestPending": "Report is sending...",
+	"error403": "Incorrect authorization data",
     "error404": "Wrong URL provided.",
     "error500": "Internal server error.",
     "descriptionErrorEmpty": "Request's description is required!",

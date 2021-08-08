@@ -15,6 +15,7 @@
     "requestSuccess": "Zgłoszenie wysłane pomyślnie.",
     "requestFail": "Zgłoszenie nie zostało wysłane.",
 	"requestPending": "Zgłoszenie jest wysyłane...",
+	"error403": "Niepoprawne dane autoryzacyjne",
     "error404": "Podano zły URL.",
     "error500": "Wewnętrzny błąd serwera.",
     "descriptionErrorEmpty": "Opis zgłoszenia jest wymagany!",
