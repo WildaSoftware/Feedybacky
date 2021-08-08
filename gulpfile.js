@@ -4,9 +4,11 @@ const csso = require('gulp-csso');
 const gulp = require('gulp');
 const rename = require('gulp-rename');
 const minify = require('gulp-minify');
+const sass = require('gulp-sass')(require('sass'));
 
 gulp.task('cssFile', function() {
-	return gulp.src('./css/feedybacky.css')
+	return gulp.src('./css/feedybacky.scss')
+		.pipe(sass().on('error', sass.logError))
 		.pipe(csso())
 		.pipe(rename('feedybacky.min.css'))
 		.pipe(gulp.dest('./css'))

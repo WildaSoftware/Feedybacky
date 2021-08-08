@@ -1,13 +1,36 @@
+$colorBlackTotal: #000000;
+$colorBlackSoft: #25303f;
+$colorWhiteTotal: #ffffff;
+$colorWhiteSoft: #f5f5f5;
+$colorGreenLight: #d4edda;
+$colorGreenDark: #155724;
+$colorRed: #ba222f;
+$colorRedLight: #f8d7da;
+$colorRedDark: #721c24;
+$colorBlueLight: #869cc4;
+$colorBlueDark: #162a8d;
+$colorBluePortal: #018fa7;
+$colorOrange: #db7429;
+
 #feedybacky-container-minified {
 	display: block;
 	position: fixed;
-	border: 1px solid black;
+	border: 1px solid $colorBlackTotal;
 	top: 100px;
 	width: 40px;
 	height: 40px;
 	cursor: pointer;
-	background-color: white;
+	background-color: $colorWhiteTotal;
 	z-index: 10000;
+	
+	div {
+		width: 100%;
+		height: 100%;
+		background-image: url(../img/icon.png);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 95%;
+	}
 }
 
 .feedybacky-container-right {
@@ -16,15 +39,6 @@
 
 .feedybacky-container-left {
 	left: 0px;
-}
-
-#feedybacky-container-minified div {
-	width: 100%;
-	height: 100%;
-	background-image: url(../img/icon.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 95%;
 }
 
 #feedybacky-alert-container {
@@ -38,21 +52,21 @@
 }
 
 .feedybacky-alert-container-success {
-    background-color: #d4edda;
-    border-color: #d4edda;
-    color: #155724;
+    background-color: $colorGreenLight;
+    border-color: $colorGreenLight;
+    color: $colorGreenDark;
 }
 
 .feedybacky-alert-container-failure {
-	background-color: #f8d7da;
-	border-color: #f8d7da;
-	color: #721c24;
+	background-color: $colorRedLight;
+	border-color: $colorRedLight;
+	color: $colorRedDark;
 }
 
 .feedybacky-alert-container-pending {
-	background-color: #869cc4;
-    border-color: #869cc4;
-    color: #162a8d;
+	background-color: $colorBlueLight;
+    border-color: $colorBlueLight;
+    color: $colorBlueDark;
 }
 
 .feedybacky-alert-container-animated {
@@ -84,50 +98,47 @@
 
 #feedybacky-container-extended {
 	display: none;
-	border: 1px solid black;
+	border: 1px solid $colorBlackTotal;
 	position: fixed;
 	top: 100px;
 	width: 90%;
 	font-size: 0.7rem;
 	min-width: 200px;
 	padding: 5px 10px 10px;
-	background-color: white;
+	background-color: $colorWhiteTotal;
 	z-index: 10000;
 	line-height: 1.5;	
 	overflow: auto;
 	max-height: 80%;
-}
-
-@media only screen and (min-width: 1201px) {
 	
-	#feedybacky-container-extended {
+	@media only screen and (min-width: 1201px) {
 		width: 25%;
 		font-size: 1rem;
 	}
-}
-
-@media only screen and (min-width: 1001px) and (max-width: 1200px) {
 	
-	#feedybacky-container-extended {
+	@media only screen and (min-width: 1001px) and (max-width: 1200px) {
 		width: 33%;
 		font-size: 0.9rem;
 	}
-}
-
-@media only screen and (min-width: 601px) and (max-width: 1000px) {
 	
-	#feedybacky-container-extended {
+	@media only screen and (min-width: 601px) and (max-width: 1000px) {
 		width: 50%;
 		font-size: 0.8rem;
 	}
-}
-
-#feedybacky-container-extended.expanded {
-	width: 50%;
-}
-
-#feedybacky-container-extended.expanded #feedybacky-form-description {
-	height: 8em;
+	
+	&.expanded {
+		width: 50%;
+		
+		#feedybacky-form-description {
+			height: 8em;
+		}
+	}
+	
+	&.feedybacky-container-theme-dark {
+		background-color: $colorBlackSoft;
+		border-color: $colorBluePortal;
+		color: $colorWhiteSoft;
+	}
 }
 
 #feedybacky-container-title {
@@ -152,6 +163,10 @@
 	overflow: auto; 
 	resize: none;
 	height: 4em;
+	
+	.feedybacky-container-theme-dark & {
+		border: 1px solid $colorBluePortal;
+	}
 }
 
 #feedybacky-form-description-expand {
@@ -175,13 +190,16 @@
 	margin-bottom: 10px;
 }
 
-#feedybacky-form input[type="checkbox"] {
-	margin-right: 5px;
-}
-
-#feedybacky-form label {
-	display: inline-block;
-	font-size: 0.9rem;
+#feedybacky-form {
+	
+	input[type="checkbox"] {
+		margin-right: 5px;
+	}
+	
+	label {
+		display: inline-block;
+		font-size: 0.9rem;
+	}
 }
 
 #feedybacky-container-note {
@@ -205,7 +223,11 @@
 }
 
 .feedybacky-error-message {
-	color: #ba222f;
+	color: $colorRed;
 	font-weight: bold;
 	font-size: 1.2em;
+	
+	.feedybacky-container-theme-dark & {
+		color: $colorOrange;
+	}
 }

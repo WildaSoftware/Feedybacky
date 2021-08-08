@@ -222,6 +222,10 @@ beforeSubmit: (payload) => {
 
 `expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
 
+`theme` - optional parameter which stores a name of UI theme which will be used for the extended form. There are two predefined themes - default and dark. It is possible to set theme in runtime by using `setTheme` method, as well as adding own theme names (look at `allowedThemes` parameter). If given theme is not allowed, the `default` will be used. The default value is `default`.
+
+`allowedThemes` - optional parameter with array of possible themes which can be set at init of the form as well as in runtime. The default value is `['default', 'dark']`.
+
 ### Methods ###
 
 After creating the Feedybacky object, some methods could be invoked on it:
@@ -229,6 +233,8 @@ After creating the Feedybacky object, some methods could be invoked on it:
 `open` - immediate opening the container with Feedybacky form.
 
 `close` - immediate closing the container with Feedybacky form.
+
+`setTheme(themeSymbol)` - change the current theme. For example, calling `setTheme('dark')` changes the theme to dark in runtime. If given theme is not allowed, the current theme stays.
 
 ### Wrappers ###
 

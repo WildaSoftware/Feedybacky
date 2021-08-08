@@ -31,6 +31,10 @@ const termsAcceptedStorageItem = 'feedybacky_termsDataAccepted';
 const personalDataAcceptedStorageItem = 'feedybacky_personalDataAccepted';
 const visitedUrlsStorageItem = 'feedybacky_visitedUrls';
 
+const defaultTheme = 'default';
+const darkTheme = 'dark';
+const standardThemes = [defaultTheme, darkTheme];
+
 class FeedybackyPayload {
 	
 	add(key, value) {
@@ -51,6 +55,13 @@ class Feedybacky {
 		this.prefix = params.prefix || null;
 		this.onSubmitUrlSuccess = params.onSubmitUrlSuccess || null;
 		this.onSubmitUrlError = params.onSubmitUrlError || null;
+		
+		this.theme = params.theme || defaultTheme;
+		this.allowedThemes = params.allowedThemes || standardThemes;
+		
+		if(!this.allowedThemes.includes(this.theme)) {
+			this.theme = defaultTheme;
+		}
 		
 		this.eventHistory = [];
 		this.historyLimit = params.historyLimit || null;
@@ -145,6 +156,7 @@ class Feedybacky {
 			this.initMinifiedContainer();
             this.initExtendedContainer();
             this.initAlertContainer();
+			this.setTheme(this.theme);
 
             document.getElementById('feedybacky-container-hide-button').addEventListener('click', e => {
                 this.showMinimalContainer();
@@ -244,6 +256,21 @@ class Feedybacky {
 	
 	close() {
 		this.showMinimalContainer();
+	}
+	
+	setTheme(themeSymbol) {
+		if(!this.allowedThemes.includes(themeSymbol)) {
+			return;
+		}
+		
+		let oldClass = 'feedybacky-container-theme-' + this.theme;
+		let newClass = 'feedybacky-container-theme-' + themeSymbol;
+		
+		this.theme = themeSymbol;		
+		this.minifiedContainer.classList.remove(oldClass);
+		this.extendedContainer.classList.remove(oldClass);
+		this.minifiedContainer.classList.add(newClass);
+		this.extendedContainer.classList.add(newClass);
 	}
     
     initMinifiedContainer() {
