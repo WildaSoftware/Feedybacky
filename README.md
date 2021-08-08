@@ -147,6 +147,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
 * **category** - value of the category selected by the user if available (the appropriate field is visible).
+* **priority** - value of priority ("medium" or "high") selected by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
 * **visitedUrls** - array of objects with last N visited URLs withing the site. Available only if the parameter `urlTracking` is enabled.
@@ -185,6 +186,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **termsAcceptedErrorNotChecked** - error message when terms and conditions have been not accepted while the plugin is paired with the Feedybacky portal.
 * **personalDataAcceptedErrorNotChecked** - error message when user has not confirm information about personal data processing while the plugin is paired with the Feedybacky portal.
 * **category** - label before the category field.
+* **priority** - label before the priority field.
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
@@ -198,6 +200,8 @@ categories: [
 	{ label: 'Issue', value: 'error' },
 ],
 ```
+
+`priorityField` - optional parameter indicating if priority select should be visible. Default value: `false`.
 
 `screenshotField ` - optional parameter for defining behaviour of the plugin during processing a screenshot. The default value is `"visible"` and it means that the checkbox is visible and a user can select if they would like to send a screenshot or not. The other possible values are `"autoEnable"` (the checkbox is not visible and the screenshot is sent automatically) and `"autoDisable"` (the checkbox is not visible and the screenshot is ignored).
 
@@ -234,9 +238,9 @@ beforeSubmit: (payload) => {
 
 `side` - optional parameter for determining side of the Feedybacky. Default value is `right` and means that the plugin is visible on the right side of the website. Another possible value is `left`.
 
-`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,category,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
+`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
 
-`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, category, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
+`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, category, priority, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
 
 `expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
 

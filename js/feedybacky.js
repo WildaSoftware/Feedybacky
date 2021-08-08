@@ -17,12 +17,13 @@ const orderTermsAcceptedCheckboxPart = 'termsAccepted';
 const orderPersonalDataAcceptedCheckboxPart = 'personalDataAccepted';
 const orderNotePart = 'note';
 const orderCategoryPart = 'category';
-const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
+const orderPriorityPart = 'priority';
+const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
 
 const orderTitlePart = 'title';
 const orderSendPart = 'send';
 const orderPoweredPart = 'powered';
-const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
+const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
 
 const alertTypeSuccess = 'success';
 const alertTypeFailure = 'error';
@@ -113,7 +114,7 @@ class Feedybacky {
 			this.params.order = newOrderSplit.join(',');
 		}
 		else {
-			this.params.order = 'description,message,email,category,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
+			this.params.order = 'description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
 		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
@@ -122,12 +123,16 @@ class Feedybacky {
 		
 		this.params.emailField = this.params.emailField || false;
 		this.params.expandMessageLink = this.params.expandMessageLink || false;
+		this.params.priorityField = this.params.priorityField || false;
 		
 		if(this.params.emailField !== true) {
 			this.params.emailField = false;
 		}
 		if(this.params.expandMessageLink !== true) {
 			this.params.expandMessageLink = false;
+		}
+		if(this.params.priorityField !== true) {
+			this.params.priorityField = false;
 		}
 		
 		this.params.categories = params.categories || [];
@@ -336,6 +341,17 @@ class Feedybacky {
 			`;
 		}
 		
+		let prioritySelectHtml = '';
+		if(this.params.priorityField) {
+			prioritySelectHtml = `
+				<div id="feedybacky-container-priority-description" class="${this.params.classes.priority}">${this.params.texts.priority}</div>
+				<select name="priority" id="feedybacky-form-priority" form="feedybacky-form" aria-required="true" class="${this.params.classes.priority}">
+					<option value="high">${this.params.texts.priorityHigh}</option>
+					<option selected="selected" value="medium">${this.params.texts.priorityMedium}</option>
+				</select>
+			`;
+		}
+		
 		let screenshotCheckboxHtml = '';
         if(this.params.screenshotField == checkboxVisibleOption) {
         	screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true" class="${this.params.classes.screenshot}"/>${this.params.texts.screenshot}</label>`;
@@ -389,6 +405,7 @@ class Feedybacky {
 		extendedParts[orderExplanationPart] = `${additionalDataInformationHtml}`;
 		extendedParts[orderEmailPart] = `${emailInputHtml}`;
 		extendedParts[orderCategoryPart] = `${categorySelectHtml}`;
+		extendedParts[orderPriorityPart] = `${prioritySelectHtml}`;
 		extendedParts[orderScreenshotCheckboxPart] = `${screenshotCheckboxHtml}`;
 		extendedParts[orderMetadataCheckboxPart] = `${metadataCheckboxHtml}`;
 		extendedParts[orderHistoryCheckboxPart] = `${historyCheckboxHtml}`;
@@ -469,6 +486,7 @@ class Feedybacky {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
 		let emailInput = document.getElementById('feedybacky-form-email');
 		let categorySelect = document.getElementById('feedybacky-form-category');
+		let prioritySelect = document.getElementById('feedybacky-form-priority');
     	
 		let payload = new FeedybackyPayload();
 		payload.message = descriptionInput.value;
@@ -482,6 +500,10 @@ class Feedybacky {
 		
 		if(categorySelect) {
 			payload.category = categorySelect.value;
+		}
+		
+		if(prioritySelect) {
+			payload.priority = prioritySelect.value;
 		}
 		
 		if(this.prefix) {

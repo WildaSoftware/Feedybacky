@@ -23,5 +23,8 @@
     "emailErrorEmpty": "Adres e-mail jest wymagany!",
 	"termsAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky.",
 	"personalDataAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky.",
-	"category": "Podaj kategorię zgłoszenia:"
+	"category": "Podaj kategorię zgłoszenia:",
+	"priority": "Podaj priorytet zgłoszenia:",
+	"priorityMedium": "Średni",
+	"priorityHigh": "Wysoki"
 }
