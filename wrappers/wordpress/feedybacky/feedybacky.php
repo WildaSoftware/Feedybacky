@@ -5,7 +5,7 @@
  * Description: Feedybacky's plugin wrapper for Wordpress. The plugin can be used to facilitate feedback gathering from a web site. This version based on version 2.1 of the original plugin.
  * Version: 1.1
  * Author: Wilda Software
- * Author URI: http://wildasoftware.pl/
+ * Author URI: https://wildasoftware.pl/
  **/
 
 const FYBY_OPTION__LANGUAGE = 'fyby_option__language';

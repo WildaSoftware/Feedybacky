@@ -251,7 +251,7 @@ class Feedybacky {
         this.params.texts = this.params.texts || {};
         this.params.texts.powered = this.params.texts.hasOwnProperty('powered') 
     		? this.params.texts.powered 
-    		: `${this.defaultVars.texts.powered} <a href="http://wildasoftware.pl/" target="_blank">Wilda Software</a>`;
+    		: `${this.defaultVars.texts.powered} <a href="https://wildasoftware.pl/" target="_blank">Wilda Software</a>`;
         
         for(const [key, value] of Object.entries(this.defaultVars.texts)) {
         	this.params.texts[key] = this.params.texts[key] || value;

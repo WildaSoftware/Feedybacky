@@ -269,7 +269,7 @@ They are very simple ports of the plugin to these systems (they can be developed
 
 ### Authors ###
 
-Feedybacky was created and is maintained by programmers of [Wilda Software](http://wildasoftware.pl/).
+Feedybacky was created and is maintained by programmers of [Wilda Software](https://wildasoftware.pl/).
 
 ### Licence ###
 
