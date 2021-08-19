@@ -789,7 +789,7 @@ class Feedybacky {
         } 
         catch (e) {
             if(error) {
-                error(e);
+                await error(e);
             }
         }
     }
