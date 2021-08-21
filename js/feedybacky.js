@@ -624,19 +624,38 @@ class Feedybacky {
 	}
 
 	sendWithScreenshotMethodMediaDevice(onSubmitUrl, payload) {
-		const canvas = document.createElement('canvas');				
+		let canvas = document.getElementById('feedybacky-screenshot-media-device-canvas');
+		let video = document.getElementById('feedybacky-screenshot-media-device-video');
+
+		if(!canvas) {
+			canvas = document.createElement('canvas');	
+			canvas.setAttribute('id', 'feedybacky-screenshot-media-device-canvas');
+		}
+		if(!video) {
+			video = document.createElement('video');
+			video.setAttribute('id', 'feedybacky-screenshot-media-device-video');
+			video.setAttribute('autoplay', '');
+		}
+
 		const constraints = { video: true };
-		const ffConstraints = { video: { mediaSource: "window" }};
+		const ffConstraints = { video: { mediaSource: 'window' }};
 		
 		let appropriateMedia = null;
 		if(typeof(RTCIceGatherer) !== 'undefined') {
 			appropriateMedia = navigator.getDisplayMedia(constraints);
 		} 
-		else if(typeof(navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
+		else if(navigator.mediaDevices && typeof(navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
 			appropriateMedia = navigator.mediaDevices.getDisplayMedia(constraints); 
 		} 
-		else {
+		else if(navigator.mediaDevices) {
 			appropriateMedia = navigator.mediaDevices.getUserMedia(ffConstraints);
+		}
+		else {
+			console.error('No media device is available - screenshot cannot be taken');
+
+			this.handleBeforeSubmitCallback(payload);
+			this.sendPostRequest(onSubmitUrl, payload);
+			return;
 		}
 	
 		appropriateMedia.then(stream => {
@@ -660,27 +679,48 @@ class Feedybacky {
 				sourceHeight = window.outerHeight;
 				destHeight = window.outerHeight;
 			}
+
+			canvas.width = document.body.clientWidth;
+			canvas.height = document.body.clientHeight;
+
+			window.stream = stream; 
+			video.srcObject = stream;
 			
 			setTimeout(() => {
-				let track = stream.getVideoTracks()[0];
-				let capture = new ImageCapture(track);
+				if ('ImageCapture' in window) {
+					let track = stream.getVideoTracks()[0];
+					let capture = new ImageCapture(track);
 
-				capture.grabFrame().then(bitmap => {
-					track.stop();
+					capture.grabFrame().then(bitmap => {
+						track.stop();
 
-					canvas.width = destWidth;
-					canvas.height = destHeight;
+						canvas.width = destWidth;
+						canvas.height = destHeight;
 
-					canvas.getContext('2d').drawImage(
-						bitmap, 
-						sourceX, sourceY, sourceWidth, sourceHeight, 
-						destX, destY, destWidth, destHeight
-					);
-	
-					payload.image = canvas.toDataURL('image/png');
+						canvas.getContext('2d').drawImage(
+							bitmap, 
+							sourceX, sourceY, sourceWidth, sourceHeight, 
+							destX, destY, destWidth, destHeight
+						);
+		
+						payload.image = canvas.toDataURL('image/png');
+						this.handleBeforeSubmitCallback(payload);
+						this.sendPostRequest(onSubmitUrl, payload);
+					});
+				}
+				else {
+					console.warn('ImageCapture is not available');
+
+					
+
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); 
+
+					payload.image = canvas.toDataURL('image/png');              
 					this.handleBeforeSubmitCallback(payload);
 					this.sendPostRequest(onSubmitUrl, payload);
-				});
+				}
 			}, 500);
 		})
 		.catch(e => console.log(e));
