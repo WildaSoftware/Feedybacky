@@ -248,6 +248,8 @@ beforeSubmit: (payload) => {
 
 `allowedThemes` - optional parameter with array of possible themes which can be set at init of the form as well as in runtime. The default value is `['default', 'dark']`.
 
+`screenshotMethod` - optional parameter for setting a screenshot method. Default value is `html2canvas` and it uses HTML2Canvas library for taking a screenshot from whole page. There are situations in which this method would cause errors, simply does not work (for example on Safari) or the user should has choice of what window should be perpetuated. For such cases, `mediaDevice` method could be set what uses appropriate browser's media mechanism.
+
 ### Methods ###
 
 After creating the Feedybacky object, some methods could be invoked on it:
@@ -257,6 +259,8 @@ After creating the Feedybacky object, some methods could be invoked on it:
 `close` - immediate closing the container with Feedybacky form.
 
 `setTheme(themeSymbol)` - change the current theme. For example, calling `setTheme('dark')` changes the theme to dark in runtime. If given theme is not allowed, the current theme stays.
+
+`setScreenshotMethod(screenshotMethod)` - change the current screenshot method, for example after detecting a user's browser type. For more information, please check description of `screenshotMethod` parameter.
 
 ### Wrappers ###
 

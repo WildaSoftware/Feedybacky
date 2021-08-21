@@ -37,6 +37,10 @@ const defaultTheme = 'default';
 const darkTheme = 'dark';
 const standardThemes = [defaultTheme, darkTheme];
 
+const screenshotMethodHtml2Canvas = 'html2canvas';
+const screenshotMethodMediaDevice = 'mediaDevice';
+const allowedScreenshotMethods = [screenshotMethodHtml2Canvas, screenshotMethodMediaDevice];
+
 class FeedybackyPayload {
 	
 	add(key, value) {
@@ -60,9 +64,14 @@ class Feedybacky {
 		
 		this.theme = params.theme || defaultTheme;
 		this.allowedThemes = params.allowedThemes || standardThemes;
-		
+
 		if(!this.allowedThemes.includes(this.theme)) {
 			this.theme = defaultTheme;
+		}
+
+		this.screenshotMethod = params.screenshotMethod || screenshotMethodHtml2Canvas;
+		if(!allowedScreenshotMethods.includes(this.screenshotMethod)) {
+			this.screenshotMethod = screenshotMethodHtml2Canvas;
 		}
 		
 		this.eventHistory = [];
@@ -279,6 +288,14 @@ class Feedybacky {
 		this.extendedContainer.classList.remove(oldClass);
 		this.minifiedContainer.classList.add(newClass);
 		this.extendedContainer.classList.add(newClass);
+	}
+
+	setScreenshotMethod(screenshotMethod) {
+		if(!allowedScreenshotMethods.includes(screenshotMethod)) {
+			return;
+		}
+
+		this.screenshotMethod = screenshotMethod;
 	}
     
     initMinifiedContainer() {
@@ -578,16 +595,12 @@ class Feedybacky {
 		this.showAlertContainer(alertTypePending);
 		
 		if(screenshotAllowed) {
-			let currentScrollPos = window.pageYOffset;
-			
-            html2canvas(document.body, {
-				onrendered: canvas => {
-					window.scrollTo(0, currentScrollPos);
-					payload.image = canvas.toDataURL('image/png');
-					this.handleBeforeSubmitCallback(payload);
-					this.sendPostRequest(this.params.onSubmitUrl, payload);
-				}
-            });
+			if(this.screenshotMethod == screenshotMethodHtml2Canvas) {
+				this.sendWithScreenshotMethodHtml2Canvas(this.params.onSubmitUrl, payload);
+			}
+			else if(this.screenshotMethod == screenshotMethodMediaDevice) {
+				this.sendWithScreenshotMethodMediaDevice(this.params.onSubmitUrl, payload);
+			}
         }
         else {
 			this.handleBeforeSubmitCallback(payload);
@@ -596,6 +609,82 @@ class Feedybacky {
         
         descriptionInput.value = '';
     }
+
+	sendWithScreenshotMethodHtml2Canvas(onSubmitUrl, payload) {
+		let currentScrollPos = window.pageYOffset;
+			
+		html2canvas(document.body, {
+			onrendered: canvas => {
+				window.scrollTo(0, currentScrollPos);
+				payload.image = canvas.toDataURL('image/png');
+				this.handleBeforeSubmitCallback(payload);
+				this.sendPostRequest(this.params.onSubmitUrl, payload);
+			}
+		});
+	}
+
+	sendWithScreenshotMethodMediaDevice(onSubmitUrl, payload) {
+		const canvas = document.createElement('canvas');				
+		const constraints = { video: true };
+		const ffConstraints = { video: { mediaSource: "window" }};
+		
+		let appropriateMedia = null;
+		if(typeof(RTCIceGatherer) !== 'undefined') {
+			appropriateMedia = navigator.getDisplayMedia(constraints);
+		} 
+		else if(typeof(navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
+			appropriateMedia = navigator.mediaDevices.getDisplayMedia(constraints); 
+		} 
+		else {
+			appropriateMedia = navigator.mediaDevices.getUserMedia(ffConstraints);
+		}
+	
+		appropriateMedia.then(stream => {
+			let sourceX = window.outerWidth - window.innerWidth;;
+			let sourceY = window.outerHeight - window.innerHeight;
+			let sourceWidth = window.innerWidth;
+			let sourceHeight = window.innerHeight;
+			let destX = 0;
+			let destY = 0;
+			let destWidth = window.innerWidth;
+			let destHeight = window.innerHeight;
+			
+			// if difference is too big, it probably means that the browser developer tools are opened
+			if(sourceX > 200) {
+				sourceX = 100;
+				sourceWidth = window.outerWidth;
+				destWidth = window.outerWidth;
+			}
+			if(sourceY > 200) {
+				sourceY = 100;
+				sourceHeight = window.outerHeight;
+				destHeight = window.outerHeight;
+			}
+			
+			setTimeout(() => {
+				let track = stream.getVideoTracks()[0];
+				let capture = new ImageCapture(track);
+
+				capture.grabFrame().then(bitmap => {
+					track.stop();
+
+					canvas.width = destWidth;
+					canvas.height = destHeight;
+
+					canvas.getContext('2d').drawImage(
+						bitmap, 
+						sourceX, sourceY, sourceWidth, sourceHeight, 
+						destX, destY, destWidth, destHeight
+					);
+	
+					payload.image = canvas.toDataURL('image/png');
+					this.handleBeforeSubmitCallback(payload);
+					this.sendPostRequest(onSubmitUrl, payload);
+				});
+			}, 500);
+		})
+		.catch(e => console.log(e));
+	}
 
     sendPostRequest(url, payload) {
 		fetch(url, {
