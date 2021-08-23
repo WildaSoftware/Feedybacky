@@ -688,30 +688,44 @@ class Feedybacky {
 			
 			setTimeout(() => {
 				if ('ImageCapture' in window) {
-					let track = stream.getVideoTracks()[0];
-					let capture = new ImageCapture(track);
+					const tracks = stream.getVideoTracks();
+					let track = null;
+					for(let i = 0; i < tracks.length; ++i) {
+						if(!tracks[i].label.includes('camera')) {
+							track = tracks[i];
+							break;
+						}
+					}
+					
+					if(track) {
+						let capture = new ImageCapture(track);
 
-					capture.grabFrame().then(bitmap => {
-						track.stop();
+						capture.grabFrame().then(bitmap => {
+							track.stop();
 
-						canvas.width = destWidth;
-						canvas.height = destHeight;
+							canvas.width = destWidth;
+							canvas.height = destHeight;
 
-						canvas.getContext('2d').drawImage(
-							bitmap, 
-							sourceX, sourceY, sourceWidth, sourceHeight, 
-							destX, destY, destWidth, destHeight
-						);
-		
-						payload.image = canvas.toDataURL('image/png');
+							canvas.getContext('2d').drawImage(
+								bitmap, 
+								sourceX, sourceY, sourceWidth, sourceHeight, 
+								destX, destY, destWidth, destHeight
+							);
+			
+							payload.image = canvas.toDataURL('image/png');
+							this.handleBeforeSubmitCallback(payload);
+							this.sendPostRequest(onSubmitUrl, payload);
+						});
+					}
+					else {
+						console.error('Cannot find video track other than camera');
+
 						this.handleBeforeSubmitCallback(payload);
 						this.sendPostRequest(onSubmitUrl, payload);
-					});
+					}
 				}
 				else {
 					console.warn('ImageCapture is not available');
-
-					
 
 					canvas.width = video.videoWidth;
 					canvas.height = video.videoHeight;
@@ -723,7 +737,7 @@ class Feedybacky {
 				}
 			}, 500);
 		})
-		.catch(e => console.log(e));
+		.catch(e => console.error(e));
 	}
 
     sendPostRequest(url, payload) {
