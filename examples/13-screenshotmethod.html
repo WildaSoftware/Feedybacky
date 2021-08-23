@@ -23,7 +23,7 @@
 			<div class="description">
 				This page is a template and a playground for testing Feedybacky plugin. Feel free to experiment and enjoy!
 				<br/>
-				This example shows simple API connection with response echoing data array. It also presents language parameter (this time is Polish - mother language for Feedybacky's developers).
+				This example shows selection of screenshot method both initial and runtime.
 			</div>
 			
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis est sit amet tortor interdum, id cursus est vestibulum. Pellentesque hendrerit condimentum purus ac suscipit. Quisque eget efficitur nunc. Fusce elit leo, auctor nec ex vel, varius imperdiet eros. Nullam mauris libero, tincidunt id nisi at, vestibulum rhoncus lectus. Curabitur vitae arcu cursus, tincidunt augue sed, molestie est. Aenean accumsan, orci et condimentum egestas, ligula tellus tincidunt arcu, vitae semper tellus mi eu arcu. Vivamus lobortis nisi interdum purus consectetur porttitor.</p>
@@ -52,14 +52,13 @@
 		<div id="feedybacky-container"></div>
 		
 		<script type="text/javascript" src="../js/feedybacky.min.js"></script>
-		<script>
+        <script>
 			var feedybacky = new Feedybacky('feedybacky-container', {
-				language: 'pl',
-				apiKey: 'your Feedybacky API key',
-				projectSymbol: 'your Feedybacky project symbol',
-				termsUrl: 'https://myimaginerysite.wildasoftware.pl/terms',
-				privacyPolicyUrl: 'https://myimaginerysite.wildasoftware.pl/privacy-policy'
+				onSubmitUrl: 'backend/api.php',
+				screenshotMethod: 'html2canvas',
 			});
+
+            feedybacky.setScreenshotMethod('mediaDevice');
 		</script>
 	</body>
 </html>

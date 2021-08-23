@@ -23,11 +23,21 @@ class FeedybackyBlock extends BlockBase {
 		$currentUserName = $currentUser->get('name')->value;
 		$currentUserUid = $currentUser->get('uid')->value;
 
-		$config = \Drupal::config('feedybacky.settings'); 
+		$language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+		$config = \Drupal::config('feedybacky.settings');
 		$url = $config->get('feedybacky.url');
 		$apiKey = $config->get('feedybacky.apiKey');
 		$projectSymbol = $config->get('feedybacky.projectSymbol');
-		$language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+		$emailField = $config->get('feedybacky.emailField');
+		$screenshotField = $config->get('feedybacky.screenshotField');
+		$metadataField = $config->get('feedybacky.metadataField');
+		$historyField = $config->get('feedybacky.historyField');
+		$historyLimit = $config->get('feedybacky.historyLimit');
+		$prefix = $config->get('feedybacky.prefix');
+		$alertAfterRequest = $config->get('feedybacky.alertAfterRequest');
+		$side = $config->get('feedybacky.side');
+		$order = $config->get('feedybacky.order');
+		$expandMessageLink = $config->get('feedybacky.expandMessageLink');
 
 		return [
 			'#markup' => $this->t(
@@ -53,7 +63,17 @@ class FeedybackyBlock extends BlockBase {
 								userID,
 								language
 							};
-						}
+						},
+						emailField: '.$emailField.',
+						screenshotField: \''.$screenshotField.'\',
+						metadataField: \''.$metadataField.'\',
+						historyField: \''.$historyField.'\',
+						historyLimit: \''.$historyLimit.'\',
+						prefix: \''.$prefix.'\',
+						alertAfterRequest: \''.$alertAfterRequest.'\',
+						side: \''.$side.'\',
+						order: \''.$order.'\',
+						expandMesssageLink: \''.$expandMessageLink.'\',
 					});
 				</script>'
 			),

@@ -1,6 +1,6 @@
 {
   "name": "feedybacky",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Feedybacky - JS plugin to facilitate feedback requests from users on web pages.",
   "main": "",
   "scripts": {
@@ -17,6 +17,8 @@
     "gulp": "^4.0.2",
     "gulp-csso": "^3.0.1",
     "gulp-minify": "^3.1.0",
-    "gulp-rename": "^1.4.0"
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^5.0.0",
+    "sass": "^1.37.5"
   }
 }

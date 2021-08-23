@@ -5,7 +5,7 @@
  * Description: Feedybacky's plugin wrapper for Wordpress. The plugin can be used to facilitate feedback gathering from a web site. This version based on version 2.1 of the original plugin.
  * Version: 1.1
  * Author: Wilda Software
- * Author URI: http://wildasoftware.pl/
+ * Author URI: https://wildasoftware.pl/
  **/
 
 const FYBY_OPTION__LANGUAGE = 'fyby_option__language';
@@ -34,6 +34,11 @@ const FYBY_OPTION__TERMSURL = 'fyby_option__termsurl';
 const FYBY_OPTION__PRIVACYPOLICYURL = 'fyby_option__privacypolicyurl';
 const FYBY_OPTION__URLTRACKING = 'fyby_option__urltracking';
 const FYBY_OPTION__URLTRACKINGLIMIT = 'fyby_option__urltrackinglimit';
+const FYBY_OPTION__THEME = 'fyby_option__theme';
+const FYBY_OPTION__ALLOWEDTHEMES = 'fyby_option__allowedthemes';
+const FYBY_OPTION__CATEGORIES = 'fyby_option__categories';
+const FYBY_OPTION__PRIORIRYFIELD = 'fyby_option__priorityfield';
+const FYBY_OPTION__SCREENSHOTMETHOD = 'fyby_option__screenshotmethod';
 
 function fyby__setup_menu() {
 	add_options_page('Feedybacky', 'Feedybacky', 'manage_options', 'feedybacky-config', 'fyby__handle_menu_view' );
@@ -112,6 +117,11 @@ function fyby__handle_menu_view(){
 		update_option(FYBY_OPTION__CLASSES, str_replace('\\', '', $data['classes']));
 		update_option(FYBY_OPTION__URLTRACKING, !empty($data['urlTracking']));
 		update_option(FYBY_OPTION__URLTRACKINGLIMIT, $data['urlTrackingLimit']);
+		update_option(FYBY_OPTION__THEME, $data['theme']);
+		update_option(FYBY_OPTION__ALLOWEDTHEMES, str_replace('\\', '', $data['allowedThemes']));
+		update_option(FYBY_OPTION__CATEGORIES, str_replace('\\', '', $data['categories']));
+		update_option(FYBY_OPTION__PRIORIRYFIELD, $data['priorityField']);
+		update_option(FYBY_OPTION__SCREENSHOTMETHOD, $data['screenshotMethod']);
 	}
 	
 	echo '<div id="feedybacky-config-page">';
@@ -148,6 +158,11 @@ function fyby__handle_menu_view(){
 	echo fyby__generate_input('expandMessageLink', FYBY_OPTION__EXPANDMESSAGELINK, 'checkbox', 'Expand Message Link');
 	echo fyby__generate_input('texts', FYBY_OPTION__TEXTS, 'textarea', 'Texts');
 	echo fyby__generate_input('classes', FYBY_OPTION__CLASSES, 'textarea', 'Classes');
+	echo fyby__generate_input('theme', FYBY_OPTION__THEME, 'text', 'Theme');
+	echo fyby__generate_input('allowedThemes', FYBY_OPTION__ALLOWEDTHEMES, 'textarea', 'Allowed Themes');
+	echo fyby__generate_input('categories', FYBY_OPTION__CATEGORIES, 'textarea', 'Categories');
+	echo fyby__generate_input('priorityField', FYBY_OPTION__PRIORIRYFIELD, 'checkbox', 'Priority Field');
+	echo fyby__generate_input('screenshotMethod', FYBY_OPTION__SCREENSHOTMETHOD, 'text', 'Screenshot Method');
 	
 	echo '</tbody>';
 	echo '</table>';
@@ -293,6 +308,26 @@ function fyby__init_plugin() {
 
 	if(!empty(get_option(FYBY_OPTION__CLASSES))) {
 		$params[] = 'classes: { '.get_option(FYBY_OPTION__CLASSES).' }';
+	}
+
+	if(!empty(get_option(FYBY_OPTION__THEME))) {
+		$params[] = 'theme: "'.get_option(FYBY_OPTION__THEME, 'default').'"';
+	}
+
+	if(!empty(get_option(FYBY_OPTION__ALLOWEDTHEMES))) {
+		$params[] = 'allowedThemes: [ '.get_option(FYBY_OPTION__ALLOWEDTHEMES, '"default", "dark"').' ]';
+	}
+
+	if(!empty(get_option(FYBY_OPTION__CATEGORIES))) {
+		$params[] = 'categories: [ '.get_option(FYBY_OPTION__CATEGORIES, '').' ]';
+	}
+
+	if(!empty(get_option(FYBY_OPTION__PRIORITYFIELD))) {
+		$params[] = 'priorityField: true';
+	}
+
+	if(!empty(get_option(FYBY_OPTION__SCREENSHOTMETHOD))) {
+		$params[] = 'screenshotMethod: "'.get_option(FYBY_OPTION__SCREENSHOTMETHOD, 'html2canvas').'"';
 	}
 	
 	$paramsString = implode(",\n", $params);

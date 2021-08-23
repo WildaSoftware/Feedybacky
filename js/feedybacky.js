@@ -16,12 +16,14 @@ const orderHistoryCheckboxPart = 'history';
 const orderTermsAcceptedCheckboxPart = 'termsAccepted';
 const orderPersonalDataAcceptedCheckboxPart = 'personalDataAccepted';
 const orderNotePart = 'note';
-const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
+const orderCategoryPart = 'category';
+const orderPriorityPart = 'priority';
+const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
 
 const orderTitlePart = 'title';
 const orderSendPart = 'send';
 const orderPoweredPart = 'powered';
-const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
+const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
 
 const alertTypeSuccess = 'success';
 const alertTypeFailure = 'error';
@@ -30,6 +32,14 @@ const alertTypePending = 'pending';
 const termsAcceptedStorageItem = 'feedybacky_termsDataAccepted';
 const personalDataAcceptedStorageItem = 'feedybacky_personalDataAccepted';
 const visitedUrlsStorageItem = 'feedybacky_visitedUrls';
+
+const defaultTheme = 'default';
+const darkTheme = 'dark';
+const standardThemes = [defaultTheme, darkTheme];
+
+const screenshotMethodHtml2Canvas = 'html2canvas';
+const screenshotMethodMediaDevice = 'mediaDevice';
+const allowedScreenshotMethods = [screenshotMethodHtml2Canvas, screenshotMethodMediaDevice];
 
 class FeedybackyPayload {
 	
@@ -51,6 +61,18 @@ class Feedybacky {
 		this.prefix = params.prefix || null;
 		this.onSubmitUrlSuccess = params.onSubmitUrlSuccess || null;
 		this.onSubmitUrlError = params.onSubmitUrlError || null;
+		
+		this.theme = params.theme || defaultTheme;
+		this.allowedThemes = params.allowedThemes || standardThemes;
+
+		if(!this.allowedThemes.includes(this.theme)) {
+			this.theme = defaultTheme;
+		}
+
+		this.screenshotMethod = params.screenshotMethod || screenshotMethodHtml2Canvas;
+		if(!allowedScreenshotMethods.includes(this.screenshotMethod)) {
+			this.screenshotMethod = screenshotMethodHtml2Canvas;
+		}
 		
 		this.eventHistory = [];
 		this.historyLimit = params.historyLimit || null;
@@ -101,7 +123,7 @@ class Feedybacky {
 			this.params.order = newOrderSplit.join(',');
 		}
 		else {
-			this.params.order = 'description,message,email,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
+			this.params.order = 'description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
 		}
 		
 		if(typeof this.params.alertAfterRequest !== 'boolean') {
@@ -110,6 +132,7 @@ class Feedybacky {
 		
 		this.params.emailField = this.params.emailField || false;
 		this.params.expandMessageLink = this.params.expandMessageLink || false;
+		this.params.priorityField = this.params.priorityField || false;
 		
 		if(this.params.emailField !== true) {
 			this.params.emailField = false;
@@ -117,6 +140,11 @@ class Feedybacky {
 		if(this.params.expandMessageLink !== true) {
 			this.params.expandMessageLink = false;
 		}
+		if(this.params.priorityField !== true) {
+			this.params.priorityField = false;
+		}
+		
+		this.params.categories = params.categories || [];
 		
 		if(typeof this.params.adBlockDetected === 'undefined') {
 			let adBlockBait = document.createElement('div');
@@ -145,9 +173,10 @@ class Feedybacky {
 			this.initMinifiedContainer();
             this.initExtendedContainer();
             this.initAlertContainer();
+			this.setTheme(this.theme);
 
             document.getElementById('feedybacky-container-hide-button').addEventListener('click', e => {
-                this.showMinimalContainer();
+                this.close();
             });
 			
             if(this.params.onSubmit) {
@@ -231,7 +260,7 @@ class Feedybacky {
         this.params.texts = this.params.texts || {};
         this.params.texts.powered = this.params.texts.hasOwnProperty('powered') 
     		? this.params.texts.powered 
-    		: `${this.defaultVars.texts.powered} <a href="http://wildasoftware.pl/" target="_blank">Wilda Software</a>`;
+    		: `${this.defaultVars.texts.powered} <a href="https://wildasoftware.pl/" target="_blank">Wilda Software</a>`;
         
         for(const [key, value] of Object.entries(this.defaultVars.texts)) {
         	this.params.texts[key] = this.params.texts[key] || value;
@@ -244,6 +273,29 @@ class Feedybacky {
 	
 	close() {
 		this.showMinimalContainer();
+	}
+	
+	setTheme(themeSymbol) {
+		if(!this.allowedThemes.includes(themeSymbol)) {
+			return;
+		}
+		
+		let oldClass = 'feedybacky-container-theme-' + this.theme;
+		let newClass = 'feedybacky-container-theme-' + themeSymbol;
+		
+		this.theme = themeSymbol;		
+		this.minifiedContainer.classList.remove(oldClass);
+		this.extendedContainer.classList.remove(oldClass);
+		this.minifiedContainer.classList.add(newClass);
+		this.extendedContainer.classList.add(newClass);
+	}
+
+	setScreenshotMethod(screenshotMethod) {
+		if(!allowedScreenshotMethods.includes(screenshotMethod)) {
+			return;
+		}
+
+		this.screenshotMethod = screenshotMethod;
 	}
     
     initMinifiedContainer() {
@@ -290,6 +342,32 @@ class Feedybacky {
         		<div id="feedybacky-form-email-error-message" class="feedybacky-error-message ${this.params.classes.email}" ></div>
         	`;
         }
+		
+		let categorySelectHtml = '';
+		if(this.params.categories.length > 0) {
+			let categoryOptions = '';
+			for(const option of this.params.categories) {
+				categoryOptions += `<option value="${option['value']}">${option['label']}</option>`;
+			}
+				
+			categorySelectHtml = `
+				<div id="feedybacky-container-category-description" class="${this.params.classes.category}">${this.params.texts.category}</div>
+				<select name="category" id="feedybacky-form-category" form="feedybacky-form" aria-required="true" class="${this.params.classes.category}">
+					${categoryOptions}
+				</select>
+			`;
+		}
+		
+		let prioritySelectHtml = '';
+		if(this.params.priorityField) {
+			prioritySelectHtml = `
+				<div id="feedybacky-container-priority-description" class="${this.params.classes.priority}">${this.params.texts.priority}</div>
+				<select name="priority" id="feedybacky-form-priority" form="feedybacky-form" aria-required="true" class="${this.params.classes.priority}">
+					<option value="high">${this.params.texts.priorityHigh}</option>
+					<option selected="selected" value="medium">${this.params.texts.priorityMedium}</option>
+				</select>
+			`;
+		}
 		
 		let screenshotCheckboxHtml = '';
         if(this.params.screenshotField == checkboxVisibleOption) {
@@ -343,6 +421,8 @@ class Feedybacky {
 		extendedParts[orderMessagePart] = `${messageHtml}`;
 		extendedParts[orderExplanationPart] = `${additionalDataInformationHtml}`;
 		extendedParts[orderEmailPart] = `${emailInputHtml}`;
+		extendedParts[orderCategoryPart] = `${categorySelectHtml}`;
+		extendedParts[orderPriorityPart] = `${prioritySelectHtml}`;
 		extendedParts[orderScreenshotCheckboxPart] = `${screenshotCheckboxHtml}`;
 		extendedParts[orderMetadataCheckboxPart] = `${metadataCheckboxHtml}`;
 		extendedParts[orderHistoryCheckboxPart] = `${historyCheckboxHtml}`;
@@ -422,6 +502,8 @@ class Feedybacky {
     prepareAndSendRequest() {
     	let descriptionInput = document.getElementById('feedybacky-form-description');
 		let emailInput = document.getElementById('feedybacky-form-email');
+		let categorySelect = document.getElementById('feedybacky-form-category');
+		let prioritySelect = document.getElementById('feedybacky-form-priority');
     	
 		let payload = new FeedybackyPayload();
 		payload.message = descriptionInput.value;
@@ -432,6 +514,14 @@ class Feedybacky {
 		if(emailInput) {
         	payload.email = emailInput.value;
         }
+		
+		if(categorySelect) {
+			payload.category = categorySelect.value;
+		}
+		
+		if(prioritySelect) {
+			payload.priority = prioritySelect.value;
+		}
 		
 		if(this.prefix) {
 			payload.prefix = this.prefix;
@@ -477,6 +567,13 @@ class Feedybacky {
             if(screen.orientation) {
             	payload.orientation = screen.orientation.type;
         	}
+			
+			payload.cookieEnabled = navigator.cookieEnabled;
+			payload.browserLanguage = navigator.language;
+			payload.referrer = document.referrer;
+			payload.pixelRatio = window.devicePixelRatio;
+			payload.offsetX = window.pageXOffset;
+			payload.offsetY = window.pageYOffset;
         }
 		
 		if(historyAllowed) {
@@ -498,16 +595,12 @@ class Feedybacky {
 		this.showAlertContainer(alertTypePending);
 		
 		if(screenshotAllowed) {
-			let currentScrollPos = window.pageYOffset;
-			
-            html2canvas(document.body, {
-				onrendered: canvas => {
-					window.scrollTo(0, currentScrollPos);
-					payload.image = canvas.toDataURL('image/png');
-					this.handleBeforeSubmitCallback(payload);
-					this.sendPostRequest(this.params.onSubmitUrl, payload);
-				}
-            });
+			if(this.screenshotMethod == screenshotMethodHtml2Canvas) {
+				this.sendWithScreenshotMethodHtml2Canvas(this.params.onSubmitUrl, payload);
+			}
+			else if(this.screenshotMethod == screenshotMethodMediaDevice) {
+				this.sendWithScreenshotMethodMediaDevice(this.params.onSubmitUrl, payload);
+			}
         }
         else {
 			this.handleBeforeSubmitCallback(payload);
@@ -516,6 +609,136 @@ class Feedybacky {
         
         descriptionInput.value = '';
     }
+
+	sendWithScreenshotMethodHtml2Canvas(onSubmitUrl, payload) {
+		let currentScrollPos = window.pageYOffset;
+			
+		html2canvas(document.body, {
+			onrendered: canvas => {
+				window.scrollTo(0, currentScrollPos);
+				payload.image = canvas.toDataURL('image/png');
+				this.handleBeforeSubmitCallback(payload);
+				this.sendPostRequest(this.params.onSubmitUrl, payload);
+			}
+		});
+	}
+
+	sendWithScreenshotMethodMediaDevice(onSubmitUrl, payload) {
+		let canvas = document.getElementById('feedybacky-screenshot-media-device-canvas');
+		let video = document.getElementById('feedybacky-screenshot-media-device-video');
+
+		if(!canvas) {
+			canvas = document.createElement('canvas');	
+			canvas.setAttribute('id', 'feedybacky-screenshot-media-device-canvas');
+		}
+		if(!video) {
+			video = document.createElement('video');
+			video.setAttribute('id', 'feedybacky-screenshot-media-device-video');
+			video.setAttribute('autoplay', '');
+		}
+
+		const constraints = { video: true };
+		const ffConstraints = { video: { mediaSource: 'window' }};
+		
+		let appropriateMedia = null;
+		if(typeof(RTCIceGatherer) !== 'undefined') {
+			appropriateMedia = navigator.getDisplayMedia(constraints);
+		} 
+		else if(navigator.mediaDevices && typeof(navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
+			appropriateMedia = navigator.mediaDevices.getDisplayMedia(constraints); 
+		} 
+		else if(navigator.mediaDevices) {
+			appropriateMedia = navigator.mediaDevices.getUserMedia(ffConstraints);
+		}
+		else {
+			console.error('No media device is available - screenshot cannot be taken');
+
+			this.handleBeforeSubmitCallback(payload);
+			this.sendPostRequest(onSubmitUrl, payload);
+			return;
+		}
+	
+		appropriateMedia.then(stream => {
+			let sourceX = window.outerWidth - window.innerWidth;;
+			let sourceY = window.outerHeight - window.innerHeight;
+			let sourceWidth = window.innerWidth;
+			let sourceHeight = window.innerHeight;
+			let destX = 0;
+			let destY = 0;
+			let destWidth = window.innerWidth;
+			let destHeight = window.innerHeight;
+			
+			// if difference is too big, it probably means that the browser developer tools are opened
+			if(sourceX > 200) {
+				sourceX = 100;
+				sourceWidth = window.outerWidth;
+				destWidth = window.outerWidth;
+			}
+			if(sourceY > 200) {
+				sourceY = 100;
+				sourceHeight = window.outerHeight;
+				destHeight = window.outerHeight;
+			}
+
+			canvas.width = document.body.clientWidth;
+			canvas.height = document.body.clientHeight;
+
+			window.stream = stream; 
+			video.srcObject = stream;
+			
+			setTimeout(() => {
+				if ('ImageCapture' in window) {
+					const tracks = stream.getVideoTracks();
+					let track = null;
+					for(let i = 0; i < tracks.length; ++i) {
+						if(!tracks[i].label.includes('camera')) {
+							track = tracks[i];
+							break;
+						}
+					}
+					
+					if(track) {
+						let capture = new ImageCapture(track);
+
+						capture.grabFrame().then(bitmap => {
+							track.stop();
+
+							canvas.width = destWidth;
+							canvas.height = destHeight;
+
+							canvas.getContext('2d').drawImage(
+								bitmap, 
+								sourceX, sourceY, sourceWidth, sourceHeight, 
+								destX, destY, destWidth, destHeight
+							);
+			
+							payload.image = canvas.toDataURL('image/png');
+							this.handleBeforeSubmitCallback(payload);
+							this.sendPostRequest(onSubmitUrl, payload);
+						});
+					}
+					else {
+						console.error('Cannot find video track other than camera');
+
+						this.handleBeforeSubmitCallback(payload);
+						this.sendPostRequest(onSubmitUrl, payload);
+					}
+				}
+				else {
+					console.warn('ImageCapture is not available');
+
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); 
+
+					payload.image = canvas.toDataURL('image/png');              
+					this.handleBeforeSubmitCallback(payload);
+					this.sendPostRequest(onSubmitUrl, payload);
+				}
+			}, 500);
+		})
+		.catch(e => console.error(e));
+	}
 
     sendPostRequest(url, payload) {
 		fetch(url, {
@@ -535,7 +758,7 @@ class Feedybacky {
 				}
             }
             else {
-				this.showAlertContainer(alertTypeFailure);
+				this.showAlertContainer(alertTypeFailure, response.status);
 				
 				if(this.onSubmitUrlError) {
 					response.text().then(res => {
@@ -709,7 +932,7 @@ class Feedybacky {
         } 
         catch (e) {
             if(error) {
-                error(e);
+                await error(e);
             }
         }
     }

@@ -23,7 +23,7 @@
 			<div class="description">
 				This page is a template and a playground for testing Feedybacky plugin. Feel free to experiment and enjoy!
 				<br/>
-				This example shows simple API connection with response echoing data array. It also presents language parameter (this time is Polish - mother language for Feedybacky's developers).
+				This example shows possibility of selecting a category and a priority for a request.
 			</div>
 		</div>
 
@@ -32,8 +32,12 @@
 		<script type="text/javascript" src="../js/feedybacky.min.js"></script>
 		<script>
 			var feedybacky = new Feedybacky('feedybacky-container', {
-				language: 'pl',
-				onSubmitUrl: 'backend/api.php'
+				onSubmitUrl: 'backend/api.php',
+				categories: [
+					{ label: 'Suggestion', value: 'suggest' },
+					{ label: 'Issue', value: 'error' },
+				],
+				priorityField: true
 			});
 		</script>
 	</body>

@@ -3,7 +3,7 @@ Feedybacky
 
 ### What is Feedybacky? ###
 
-Feedybacky is simple JS plugin for web pages which facilitates feedback system. It creates a sliding element on HTML page in which an user can provide a request (error, suggest, comment etc.) and send it in rapid and easy way. The special part of this process is the fact, that Feedybacky allows to attach a screenshot of the current page and additional information **automatically**. It includes i.a. current URL, user agent string and - of course - current datetime. In many situations, request's text provided by a user is not sufficient to reproduce e.g. an error - Feedybacky tries to solve that problem.
+Feedybacky is simple JS plugin for web pages which facilitates feedback system. It creates a sliding element on HTML page in which a user can provide a request (error, suggest, comment etc.) and send it in rapid and easy way. The special part of this process is the fact, that Feedybacky allows to attach a screenshot of the current page and additional information **automatically**. It includes i.a. current URL, user agent string and - of course - current datetime. In many situations, request's text provided by a user is not sufficient to reproduce e.g. an error - Feedybacky tries to solve that problem.
 
 Feedybacky uses `html2canvas` library created by Niklas von Hertzen.
 
@@ -137,9 +137,17 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **innerSize** - size of visible frame (result of `window.innerWidth` and `window.innerHeight`). Available only if the user accepted sending metadata information.
 * **colorDepth** - depth of the pixel on the screen (result of `screen.colorDepth`). Available only if the user accepted sending metadata information.
 * **orientation** - screen orientation (result of `screen.orientation.type;`). Available only if the user accepted sending metadata information.
+* **cookieEnabled** - information about if a user enabled cookies (result of `navigator.cookieEnabled`). Available only if the user accepted sending metadata information.
+* **browserLanguage** - language in which a browser displays the site (result of `navigator.language`). Available only if the user accepted sending metadata information.
+* **referrer** - URL referrer from which the user comes to the site (result of `document.referrer`). Available only if the user accepted sending metadata information.
+* **pixelRatio** - ratio of device physical pixels to CSS pixels (result of `window.devicePixelRatio`). Available only if the user accepted sending metadata information.
+* **offsetX** - horizontally scrolled pixels (result of `window.pageXOffset`). Available only if the user accepted sending metadata information.
+* **offsetY** - vertically scrolled pixels (result of `window.pageYOffset`). Available only if the user accepted sending metadata information.
 * **history** - array of objects representing last N events called by the user (details below). Available only if the user accepted sending history information.
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
+* **category** - value of the category selected by the user if available (the appropriate field is visible).
+* **priority** - value of priority ("medium" or "high") selected by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
 * **visitedUrls** - array of objects with last N visited URLs withing the site. Available only if the parameter `urlTracking` is enabled.
@@ -169,6 +177,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **requestFail** - message visible after unsuccessful POST request sending.
 * **requestPending** - message visible during sending a POST request.
 * **powered** - message on bottom of the plugin screen.
+* **error403** - message after a situation where an 403 error occurred.
 * **error404** - message after a situation where an 404 error occurred.
 * **error500** - message after a situation where an 500 error occurred.
 * **descriptionErrorEmpty** - error message for the empty description field.
@@ -176,10 +185,23 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **emailErrorEmpty** - error message for the empty e-mail address field.
 * **termsAcceptedErrorNotChecked** - error message when terms and conditions have been not accepted while the plugin is paired with the Feedybacky portal.
 * **personalDataAcceptedErrorNotChecked** - error message when user has not confirm information about personal data processing while the plugin is paired with the Feedybacky portal.
+* **category** - label before the category field.
+* **priority** - label before the priority field.
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
 `emailField` - optional parameter indicating if e-mail address field should be visible. If it is visible, it is also required. Default value: `false`.
+
+`categories` - optional parameter for array of category options presented for the user. If this parameter is omitted or no category is provided, the select with category is not visible and the value not be sent with a request. Each element of this array should be a JSON object with two keys: `label` and `value`, e.g.:
+
+```ts
+categories: [
+	{ label: 'Suggestion', value: 'suggest' },
+	{ label: 'Issue', value: 'error' },
+],
+```
+
+`priorityField` - optional parameter indicating if priority select should be visible. Default value: `false`.
 
 `screenshotField ` - optional parameter for defining behaviour of the plugin during processing a screenshot. The default value is `"visible"` and it means that the checkbox is visible and a user can select if they would like to send a screenshot or not. The other possible values are `"autoEnable"` (the checkbox is not visible and the screenshot is sent automatically) and `"autoDisable"` (the checkbox is not visible and the screenshot is ignored).
 
@@ -216,11 +238,17 @@ beforeSubmit: (payload) => {
 
 `side` - optional parameter for determining side of the Feedybacky. Default value is `right` and means that the plugin is visible on the right side of the website. Another possible value is `left`.
 
-`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
+`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
 
-`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
+`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, category, priority, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
 
 `expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
+
+`theme` - optional parameter which stores a name of UI theme which will be used for the extended form. There are two predefined themes - default and dark. It is possible to set theme in runtime by using `setTheme` method, as well as adding own theme names (look at `allowedThemes` parameter). If given theme is not allowed, the `default` will be used. The default value is `default`.
+
+`allowedThemes` - optional parameter with array of possible themes which can be set at init of the form as well as in runtime. The default value is `['default', 'dark']`.
+
+`screenshotMethod` - optional parameter for setting a screenshot method. Default value is `html2canvas` and it uses HTML2Canvas library for taking a screenshot from whole page. There are situations in which this method would cause errors, simply does not work (for example on Safari) or the user should has choice of what window should be perpetuated. For such cases, `mediaDevice` method could be set what uses appropriate browser's media mechanism.
 
 ### Methods ###
 
@@ -229,6 +257,10 @@ After creating the Feedybacky object, some methods could be invoked on it:
 `open` - immediate opening the container with Feedybacky form.
 
 `close` - immediate closing the container with Feedybacky form.
+
+`setTheme(themeSymbol)` - change the current theme. For example, calling `setTheme('dark')` changes the theme to dark in runtime. If given theme is not allowed, the current theme stays.
+
+`setScreenshotMethod(screenshotMethod)` - change the current screenshot method, for example after detecting a user's browser type. For more information, please check description of `screenshotMethod` parameter.
 
 ### Wrappers ###
 
@@ -241,7 +273,7 @@ They are very simple ports of the plugin to these systems (they can be developed
 
 ### Authors ###
 
-Feedybacky was created and is maintained by programmers of [Wilda Software](http://wildasoftware.pl/).
+Feedybacky was created and is maintained by programmers of [Wilda Software](https://wildasoftware.pl/).
 
 ### Licence ###
 
