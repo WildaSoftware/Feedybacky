@@ -213,9 +213,11 @@ class Feedybacky {
             if(this.params.allowScreenshotModification) {
                 document.getElementById('feedybacky-form-screenshot-modify').addEventListener('click', (e) => {
                     e.preventDefault();
-                    // TODO zainicjalizować z backgroundem
-                    this.initializeDrawing('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAnElEQVR42u3RAQ0AAAgDIE1u9FvDOahApzLFGS1ECEKEIEQIQoQgRIgQIQgRghAhCBGCECEIQYgQhAhBiBCECEEIQoQgRAhChCBECEIQIgQhQhAiBCFCEIIQIQgRghAhCBGCEIQIQYgQhAhBiBCEIEQIQoQgRAhChCAEIUIQIgQhQhAiBCEIEYIQIQgRghAhCBEiRAhChCBECEK+W99M+TnxqRsqAAAAAElFTkSuQmCC');
-                    document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+
+                    this.getScreenshot().then((image) => {
+                        this.initializeDrawing(image);
+                        document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+                    });
                 });
 
                 document.getElementById('feedybacky-screen-modification-modal-close').addEventListener('click', (e) => {
@@ -678,11 +680,11 @@ class Feedybacky {
             this.sendPostRequest(this.params.onSubmitUrl, payload);
         }
         else if (screenshotAllowed) {
-            if (this.screenshotMethod == screenshotMethodHtml2Canvas) {
-                this.sendWithScreenshotMethodHtml2Canvas(this.params.onSubmitUrl, payload);
-            } else if (this.screenshotMethod == screenshotMethodMediaDevice) {
-                this.sendWithScreenshotMethodMediaDevice(this.params.onSubmitUrl, payload);
-            }
+            this.getScreenshot().then((image) => {
+                payload.image = image;
+                this.handleBeforeSubmitCallback(payload);
+                this.sendPostRequest(this.params.onSubmitUrl, payload);
+            });
         } else {
             this.handleBeforeSubmitCallback(payload);
             this.sendPostRequest(this.params.onSubmitUrl, payload);
@@ -691,129 +693,125 @@ class Feedybacky {
         descriptionInput.value = '';
     }
 
-    sendWithScreenshotMethodHtml2Canvas(onSubmitUrl, payload) {
-        let currentScrollPos = window.pageYOffset;
-
-        html2canvas(document.body, {
-            onrendered: canvas => {
-                window.scrollTo(0, currentScrollPos);
-                payload.image = canvas.toDataURL('image/png');
-                this.handleBeforeSubmitCallback(payload);
-                this.sendPostRequest(this.params.onSubmitUrl, payload);
-            }
+    getScreenshotMethodHtml2Canvas() {
+        return new Promise((resolve) => {
+            let currentScrollPos = window.pageYOffset;
+    
+            html2canvas(document.body, {
+                onrendered: canvas => {
+                    window.scrollTo(0, currentScrollPos);
+                    resolve(canvas.toDataURL('image/png'));
+                }
+            });
         });
     }
 
-    sendWithScreenshotMethodMediaDevice(onSubmitUrl, payload) {
-        let canvas = document.getElementById('feedybacky-screenshot-media-device-canvas');
-        let video = document.getElementById('feedybacky-screenshot-media-device-video');
-
-        if (!canvas) {
-            canvas = document.createElement('canvas');
-            canvas.setAttribute('id', 'feedybacky-screenshot-media-device-canvas');
-        }
-        if (!video) {
-            video = document.createElement('video');
-            video.setAttribute('id', 'feedybacky-screenshot-media-device-video');
-            video.setAttribute('autoplay', '');
-        }
-
-        const constraints = { video: true };
-        const ffConstraints = { video: { mediaSource: 'window' } };
-
-        let appropriateMedia = null;
-        if (typeof (RTCIceGatherer) !== 'undefined') {
-            appropriateMedia = navigator.getDisplayMedia(constraints);
-        } else if (navigator.mediaDevices && typeof (navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
-            appropriateMedia = navigator.mediaDevices.getDisplayMedia(constraints);
-        } else if (navigator.mediaDevices) {
-            appropriateMedia = navigator.mediaDevices.getUserMedia(ffConstraints);
-        } else {
-            console.error('No media device is available - screenshot cannot be taken');
-
-            this.handleBeforeSubmitCallback(payload);
-            this.sendPostRequest(onSubmitUrl, payload);
-            return;
-        }
-
-        appropriateMedia.then(stream => {
-            let sourceX = window.outerWidth - window.innerWidth;;
-            let sourceY = window.outerHeight - window.innerHeight;
-            let sourceWidth = window.innerWidth;
-            let sourceHeight = window.innerHeight;
-            let destX = 0;
-            let destY = 0;
-            let destWidth = window.innerWidth;
-            let destHeight = window.innerHeight;
-
-            // if difference is too big, it probably means that the browser developer tools are opened
-            if (sourceX > 200) {
-                sourceX = 100;
-                sourceWidth = window.outerWidth;
-                destWidth = window.outerWidth;
+    getScreenshotMethodMediaDevice() {
+        return new Promise((resolve) => {
+            let canvas = document.getElementById('feedybacky-screenshot-media-device-canvas');
+            let video = document.getElementById('feedybacky-screenshot-media-device-video');
+    
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.setAttribute('id', 'feedybacky-screenshot-media-device-canvas');
             }
-            if (sourceY > 200) {
-                sourceY = 100;
-                sourceHeight = window.outerHeight;
-                destHeight = window.outerHeight;
+            if (!video) {
+                video = document.createElement('video');
+                video.setAttribute('id', 'feedybacky-screenshot-media-device-video');
+                video.setAttribute('autoplay', '');
             }
-
-            canvas.width = document.body.clientWidth;
-            canvas.height = document.body.clientHeight;
-
-            window.stream = stream;
-            video.srcObject = stream;
-
-            setTimeout(() => {
-                if ('ImageCapture' in window) {
-                    const tracks = stream.getVideoTracks();
-                    let track = null;
-                    for (let i = 0; i < tracks.length; ++i) {
-                        if (!tracks[i].label.includes('camera')) {
-                            track = tracks[i];
-                            break;
-                        }
-                    }
-
-                    if (track) {
-                        let capture = new ImageCapture(track);
-
-                        capture.grabFrame().then(bitmap => {
-                            track.stop();
-
-                            canvas.width = destWidth;
-                            canvas.height = destHeight;
-
-                            canvas.getContext('2d').drawImage(
-                                bitmap,
-                                sourceX, sourceY, sourceWidth, sourceHeight,
-                                destX, destY, destWidth, destHeight
-                            );
-
-                            payload.image = canvas.toDataURL('image/png');
-                            this.handleBeforeSubmitCallback(payload);
-                            this.sendPostRequest(onSubmitUrl, payload);
-                        });
-                    } else {
-                        console.error('Cannot find video track other than camera');
-
-                        this.handleBeforeSubmitCallback(payload);
-                        this.sendPostRequest(onSubmitUrl, payload);
-                    }
-                } else {
-                    console.warn('ImageCapture is not available');
-
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                    payload.image = canvas.toDataURL('image/png');
-                    this.handleBeforeSubmitCallback(payload);
-                    this.sendPostRequest(onSubmitUrl, payload);
+    
+            const constraints = { video: true };
+            const ffConstraints = { video: { mediaSource: 'window' } };
+    
+            let appropriateMedia = null;
+            if (typeof (RTCIceGatherer) !== 'undefined') {
+                appropriateMedia = navigator.getDisplayMedia(constraints);
+            } else if (navigator.mediaDevices && typeof (navigator.mediaDevices.getDisplayMedia) !== 'undefined') {
+                appropriateMedia = navigator.mediaDevices.getDisplayMedia(constraints);
+            } else if (navigator.mediaDevices) {
+                appropriateMedia = navigator.mediaDevices.getUserMedia(ffConstraints);
+            } else {
+                console.error('No media device is available - screenshot cannot be taken');
+    
+                resolve(null);
+                return;
+            }
+    
+            appropriateMedia.then(stream => {
+                let sourceX = window.outerWidth - window.innerWidth;;
+                let sourceY = window.outerHeight - window.innerHeight;
+                let sourceWidth = window.innerWidth;
+                let sourceHeight = window.innerHeight;
+                let destX = 0;
+                let destY = 0;
+                let destWidth = window.innerWidth;
+                let destHeight = window.innerHeight;
+    
+                // if difference is too big, it probably means that the browser developer tools are opened
+                if (sourceX > 200) {
+                    sourceX = 100;
+                    sourceWidth = window.outerWidth;
+                    destWidth = window.outerWidth;
                 }
-            }, 500);
-        })
-            .catch(e => console.error(e));
+                if (sourceY > 200) {
+                    sourceY = 100;
+                    sourceHeight = window.outerHeight;
+                    destHeight = window.outerHeight;
+                }
+    
+                canvas.width = document.body.clientWidth;
+                canvas.height = document.body.clientHeight;
+    
+                window.stream = stream;
+                video.srcObject = stream;
+    
+                setTimeout(() => {
+                    if ('ImageCapture' in window) {
+                        const tracks = stream.getVideoTracks();
+                        let track = null;
+                        for (let i = 0; i < tracks.length; ++i) {
+                            if (!tracks[i].label.includes('camera')) {
+                                track = tracks[i];
+                                break;
+                            }
+                        }
+    
+                        if (track) {
+                            let capture = new ImageCapture(track);
+    
+                            capture.grabFrame().then(bitmap => {
+                                track.stop();
+    
+                                canvas.width = destWidth;
+                                canvas.height = destHeight;
+    
+                                canvas.getContext('2d').drawImage(
+                                    bitmap,
+                                    sourceX, sourceY, sourceWidth, sourceHeight,
+                                    destX, destY, destWidth, destHeight
+                                );
+    
+                                resolve(canvas.toDataURL('image/png'));
+                            });
+                        } else {
+                            console.error('Cannot find video track other than camera');
+    
+                            resolve(null);
+                        }
+                    } else {
+                        console.warn('ImageCapture is not available');
+    
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                        resolve(canvas.toDataURL('image/png'));
+                    }
+                }, 500);
+            })
+                .catch(e => console.error(e));
+        });
     }
 
     sendPostRequest(url, payload) {
@@ -977,7 +975,7 @@ class Feedybacky {
         
         base_image.onload = () => {
             this.screenshotModification.baseImage = base_image;
-            context.drawImage(base_image, 0, 0);
+            context.drawImage(base_image, 0, 0, mycanvas.width, mycanvas.height);
         }
 
         canvasContainer.prepend(mycanvas);
@@ -1043,13 +1041,26 @@ class Feedybacky {
 
     clearScreenshotModification() {
         this.screenshotModification.ctx.clearRect(0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
-        this.screenshotModification.ctx.drawImage(this.screenshotModification.baseImage, 0, 0);
+        this.screenshotModification.ctx.drawImage(this.screenshotModification.baseImage, 0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
     }
     
     saveScreenshotModification() {
         this.modifiedScreenshot = this.screenshotModification.canvas.toDataURL();
-        console.log(this.modifiedScreenshot);
         document.getElementById('feedybacky-screen-modification-modal').style.display = 'none';
+    }
+
+    getScreenshot() {
+        return new Promise((resolve) => {   
+            if (this.screenshotMethod == screenshotMethodHtml2Canvas) {
+                this.getScreenshotMethodHtml2Canvas().then((image) => {
+                    resolve(image);
+                });
+            } else if (this.screenshotMethod == screenshotMethodMediaDevice) {
+                this.getScreenshotMethodMediaDevice().then((image) => {
+                    resolve(image);
+                });
+            }
+        });
     }
 
     importDependencies() {
