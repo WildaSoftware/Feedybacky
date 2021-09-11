@@ -167,6 +167,7 @@ class Feedybacky {
 
         if(this.params.allowScreenshotModification) {
             this.screenshotModification = {
+                baseImage: null,
                 canvas: null,
                 ctx: null,
                 flag: null,
@@ -213,7 +214,7 @@ class Feedybacky {
                 document.getElementById('feedybacky-form-screenshot-modify').addEventListener('click', (e) => {
                     e.preventDefault();
                     // TODO zainicjalizować z backgroundem
-                    this.initializeDrawing('asdasd');
+                    this.initializeDrawing('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAnElEQVR42u3RAQ0AAAgDIE1u9FvDOahApzLFGS1ECEKEIEQIQoQgRIgQIQgRghAhCBGCECEIQYgQhAhBiBCECEEIQoQgRAhChCBECEIQIgQhQhAiBCFCEIIQIQgRghAhCBGCEIQIQYgQhAhBiBCEIEQIQoQgRAhChCAEIUIQIgQhQhAiBCEIEYIQIQgRghAhCBEiRAhChCBECEK+W99M+TnxqRsqAAAAAElFTkSuQmCC');
                     document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
                 });
 
@@ -958,12 +959,26 @@ class Feedybacky {
     }
 
     initializeDrawing(image) {
+        if(this.screenshotModification.canvas) {
+            this.screenshotModification.ctx.clearRect(0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
+        }
+
         const canvasContainer = document.getElementById('canvas-container');
         var mycanvas = document.createElement("canvas");
         mycanvas.id = "can"
 
         mycanvas.width = window.innerWidth * 0.8;
         mycanvas.height = window.innerHeight * 0.8 * (document.body.clientWidth / window.innerWidth);
+        
+        const context = mycanvas.getContext('2d');
+
+        const base_image = new Image();
+        base_image.src = image;
+        
+        base_image.onload = () => {
+            this.screenshotModification.baseImage = base_image;
+            context.drawImage(base_image, 0, 0);
+        }
 
         canvasContainer.prepend(mycanvas);
         canvasContainer.style.height = `${mycanvas.height}px`;
@@ -1027,11 +1042,13 @@ class Feedybacky {
     }
 
     clearScreenshotModification() {
-        // TODO czyszczenie wszystkiego
+        this.screenshotModification.ctx.clearRect(0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
+        this.screenshotModification.ctx.drawImage(this.screenshotModification.baseImage, 0, 0);
     }
     
     saveScreenshotModification() {
         this.modifiedScreenshot = this.screenshotModification.canvas.toDataURL();
+        console.log(this.modifiedScreenshot);
         document.getElementById('feedybacky-screen-modification-modal').style.display = 'none';
     }
 
