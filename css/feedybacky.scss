@@ -12,6 +12,8 @@ $colorBlueLight: #869cc4;
 $colorBlueDark: #162a8d;
 $colorBluePortal: #018fa7;
 $colorOrange: #db7429;
+$colorYellowDark: #e2e216;
+$colorGrey: #aaaaaa;
 
 #feedybacky-container-minified {
 	display: block;
@@ -245,22 +247,21 @@ $colorOrange: #db7429;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
+    background-color: $colorBlackWithAlpha;
 
 	/* Modal Content */
 	.modal-content {
-		background-color: #fefefe;
+		background-color: $colorWhiteTotal;
 		margin: auto;
-		border: 1px solid #888;
+		border: 1px solid $colorBlackSoft;
 		width: 80%;
 
-		#canvas-container {			
+		#feedybacky-canvas-container {			
 			canvas {
 				position: absolute;
 			}
 
-			.action-container {
+			.feedybacky-action-container {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -268,10 +269,10 @@ $colorOrange: #db7429;
 				position: relative;
 				height: 50px;
 
-				.color-change-container {
+				.feedybacky-color-change-container {
 					display: flex;
 	
-					.color-change {
+					.feedybacky-color-change {
 						height: 20px;
 						width: 20px;
 						border: 1px solid $colorBlackTotal;
@@ -283,32 +284,32 @@ $colorOrange: #db7429;
 						}
 					}
 					
-					#green {
-						background: green;
+					#feedybacky-green {
+						background: $colorGreenDark;
 					}
 					
-					#blue {
-						background: blue;
+					#feedybacky-blue {
+						background: $colorBlueDark;
 					}
 					
-					#red {
-						background: red;
+					#feedybacky-red {
+						background: $colorRedDark;
 					}
 					
-					#yellow {
-						background: yellow;
+					#feedybacky-yellow {
+						background: $colorYellowDark;
 					}
 					
-					#orange {
-						background: orange;
+					#feedybacky-orange {
+						background: $colorOrange;
 					}
 					
-					#black {
-						background: black;
+					#feedybacky-black {
+						background: $colorBlackTotal;
 					}
 				}
 				
-				.inputs-container {
+				.feedybacky-inputs-container {
 					input {
 						padding: 5px;
 						margin-left: 10px;
@@ -320,10 +321,10 @@ $colorOrange: #db7429;
 	
 	/* The Close Button */
 	#feedybacky-screen-modification-modal-close {
-		color: #aaa;
+		color: $colorGrey;
 		font-size: 28px;
 		font-weight: 700;
-		background: #fff;
+		background: $colorWhiteTotal;
 		border-radius: 50%;
 		height: 30px;
 		width: 30px;
@@ -338,7 +339,7 @@ $colorOrange: #db7429;
 		position: relative;
 
 		&:hover, &:focus {
-			color: #000;
+			color: $colorBlackTotal;
 			text-decoration: none;
 			cursor: pointer;
 		}

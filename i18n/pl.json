@@ -27,7 +27,8 @@
     "priority": "Podaj priorytet zgłoszenia:",
     "priorityMedium": "Średni",
     "priorityHigh": "Wysoki",
-    "modifyScreenshot": "Modyfikuj zrzut ekranu",
+    "modifyScreenshot": "Zaznacz miejsca",
     "save": "Zapisz",
-    "clear": "Wyczyść"
+    "clear": "Wyczyść",
+    "working": "Praca w toku..."
 }

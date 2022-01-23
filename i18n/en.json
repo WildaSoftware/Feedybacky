@@ -27,7 +27,8 @@
     "priority": "Provide a request's priority:",
     "priorityMedium": "Medium",
     "priorityHigh": "High",
-    "modifyScreenshot": "Modify screenshot",
+    "modifyScreenshot": "Mark places",
     "save": "Save",
-    "clear": "Clear"
+    "clear": "Clear",
+    "working": "Work in progress..."
 }

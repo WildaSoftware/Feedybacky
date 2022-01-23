@@ -163,7 +163,9 @@ class Feedybacky {
         this.params.termsUrl = this.params.termsUrl || '#';
         this.params.privacyPolicyUrl = this.params.privacyPolicyUrl || '#';
 
-        this.params.allowScreenshotModification = this.params.allowScreenshotModification || true;
+        if (this.params.allowScreenshotModification !== false) {
+            this.params.allowScreenshotModification = true;
+        }
 
         if(this.params.allowScreenshotModification) {
             this.screenshotModification = {
@@ -177,7 +179,7 @@ class Feedybacky {
                 currX: 0,
                 prevY: 0,
                 currY: 0,
-                dot_flag: false
+                dotFlag: false
             }
         }
 
@@ -211,12 +213,27 @@ class Feedybacky {
             }
 
             if(this.params.allowScreenshotModification) {
+                document.getElementById('feedybacky-form-screenshot-allowed').addEventListener('change', (e) => {
+                    if(e.target.checked) {
+                        document.getElementById('feedybacky-form-screenshot-modify').style.display = 'inline';
+                    }
+                    else {
+                        document.getElementById('feedybacky-form-screenshot-modify').style.display = 'none';
+                    }
+                });
+                document.getElementById('feedybacky-form-screenshot-allowed').dispatchEvent(new Event('change'));
+
                 document.getElementById('feedybacky-form-screenshot-modify').addEventListener('click', (e) => {
                     e.preventDefault();
-
+                    
+                    let scrMdfyLabel = e.target.innerHTML;
+                    e.target.innerHTML = this.params.texts.working;
+                    
                     this.getScreenshot().then((image) => {
                         this.initializeDrawing(image);
                         document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+
+                        e.target.innerHTML = scrMdfyLabel;
                     });
                 });
 
@@ -235,12 +252,12 @@ class Feedybacky {
                     this.clearScreenshotModification();
                 });
 
-                let colorElements = document.getElementsByClassName("color-change");
+                let colorElements = document.getElementsByClassName('feedybacky-color-change');
 
                 for (let i = 0; i < colorElements.length; i++) {
                     colorElements[i].addEventListener('click', (e) => {
                         e.preventDefault();
-                        this.screenshotModification.selectedColor = e.target.id;
+                        this.screenshotModification.selectedColor = window.getComputedStyle(document.getElementById(e.target.id), null).getPropertyValue('background-color');
                     }, false);
                 }
             }
@@ -422,7 +439,7 @@ class Feedybacky {
         let screenshotCheckboxHtml = '';
         if (this.params.screenshotField == checkboxVisibleOption) {
             screenshotCheckboxHtml = `<label><input type="checkbox" id="feedybacky-form-screenshot-allowed" checked="true" class="${this.params.classes.screenshot}"/>${this.params.texts.screenshot}
-                    ${this.params.allowScreenshotModification ? `<button id="feedybacky-form-screenshot-modify">${this.params.texts.modifyScreenshot}</button>` : ''}
+                    ${this.params.allowScreenshotModification ? `<a href="#" id="feedybacky-form-screenshot-modify">${this.params.texts.modifyScreenshot}</a>` : ''}
                 </label>`;
         }
 
@@ -509,17 +526,17 @@ class Feedybacky {
                     <div class="modal-content">
                         <span id="feedybacky-screen-modification-modal-close">&times;</span>
                         
-                        <div id="canvas-container">
-                            <div class="action-container">
-                                <div class="color-change-container">
-                                    <div class="color-change" id="green"></div>
-                                    <div class="color-change" id="blue"></div>
-                                    <div class="color-change" id="red"></div>
-                                    <div class="color-change" id="yellow"></div>
-                                    <div class="color-change" id="orange"></div>
-                                    <div class="color-change" id="black"></div>
+                        <div id="feedybacky-canvas-container">
+                            <div class="feedybacky-action-container">
+                                <div class="feedybacky-color-change-container">
+                                    <div class="feedybacky-color-change" id="feedybacky-green"></div>
+                                    <div class="feedybacky-color-change" id="feedybacky-blue"></div>
+                                    <div class="feedybacky-color-change" id="feedybacky-red"></div>
+                                    <div class="feedybacky-color-change" id="feedybacky-yellow"></div>
+                                    <div class="feedybacky-color-change" id="feedybacky-orange"></div>
+                                    <div class="feedybacky-color-change" id="feedybacky-black"></div>
                                 </div>
-                                <div class="inputs-container">
+                                <div class="feedybacky-inputs-container">
                                     <input type="button" value="${this.params.texts.save}" id="feedybacky-screen-modification-modal-save">
                                     <input type="button" value="${this.params.texts.clear}" id="feedybacky-screen-modification-modal-clear">
                                 </div>
@@ -885,7 +902,7 @@ class Feedybacky {
         ((history) => {
             const pushState = history.pushState;
             history.pushState = (state, ...args) => {
-                if (typeof history.onpushstate == "function") {
+                if (typeof history.onpushstate == 'function') {
                     history.onpushstate({ state: state });
                 }
 
@@ -961,64 +978,64 @@ class Feedybacky {
             this.screenshotModification.ctx.clearRect(0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
         }
 
-        const canvasContainer = document.getElementById('canvas-container');
-        var mycanvas = document.createElement("canvas");
-        mycanvas.id = "can"
+        const canvasContainer = document.getElementById('feedybacky-canvas-container');
+        var myCanvas = document.createElement('canvas');
+        myCanvas.id = 'can'
 
-        mycanvas.width = window.innerWidth * 0.8;
-        mycanvas.height = window.innerHeight * 0.8 * (document.body.clientWidth / window.innerWidth);
+        myCanvas.width = window.innerWidth * 0.8;
+        myCanvas.height = window.innerHeight * 0.8 * (document.body.clientWidth / window.innerWidth);
         
-        const context = mycanvas.getContext('2d');
+        const context = myCanvas.getContext('2d');
 
-        const base_image = new Image();
-        base_image.src = image;
+        const baseImage = new Image();
+        baseImage.src = image;
         
-        base_image.onload = () => {
-            this.screenshotModification.baseImage = base_image;
-            context.drawImage(base_image, 0, 0, mycanvas.width, mycanvas.height);
+        baseImage.onload = () => {
+            this.screenshotModification.baseImage = baseImage;
+            context.drawImage(baseImage, 0, 0, myCanvas.width, myCanvas.height);
         }
 
-        canvasContainer.prepend(mycanvas);
-        canvasContainer.style.height = `${mycanvas.height}px`;
+        canvasContainer.prepend(myCanvas);
+        canvasContainer.style.height = `${myCanvas.height}px`;
 
         this.screenshotModification.canvas = document.getElementById('can');
-        this.screenshotModification.ctx = this.screenshotModification.canvas.getContext("2d");
+        this.screenshotModification.ctx = this.screenshotModification.canvas.getContext('2d');
     
-        this.screenshotModification.canvas.addEventListener("mousemove", (e) => {
-            this.findxyOnScreenshot('move', e)
+        this.screenshotModification.canvas.addEventListener('mousemove', (e) => {
+            this.findXYOnScreenshot('move', e)
         }, false);
-        this.screenshotModification.canvas.addEventListener("mousedown", (e) => {
-            this.findxyOnScreenshot('down', e)
+        this.screenshotModification.canvas.addEventListener('mousedown', (e) => {
+            this.findXYOnScreenshot('down', e)
         }, false);
-        this.screenshotModification.canvas.addEventListener("mouseup", (e) => {
-            this.findxyOnScreenshot('up', e)
+        this.screenshotModification.canvas.addEventListener('mouseup', (e) => {
+            this.findXYOnScreenshot('up', e)
         }, false);
-        this.screenshotModification.canvas.addEventListener("mouseout", (e) => {
-            this.findxyOnScreenshot('out', e)
+        this.screenshotModification.canvas.addEventListener('mouseout', (e) => {
+            this.findXYOnScreenshot('out', e)
         }, false);
     }
 
-    findxyOnScreenshot(res, e) {
-        if (res == 'down') {
+    findXYOnScreenshot(eventType, e) {
+        if (eventType == 'down') {
             this.screenshotModification.prevX = this.screenshotModification.currX;
             this.screenshotModification.prevY = this.screenshotModification.currY;
             this.screenshotModification.currX = e.clientX - this.screenshotModification.canvas.offsetLeft;
             this.screenshotModification.currY = e.clientY - this.screenshotModification.canvas.offsetTop;
     
             this.screenshotModification.flag = true;
-            this.screenshotModification.dot_flag = true;
-            if (this.screenshotModification.dot_flag) {
+            this.screenshotModification.dotFlag = true;
+            if (this.screenshotModification.dotFlag) {
                 this.screenshotModification.ctx.beginPath();
                 this.screenshotModification.ctx.fillStyle = this.screenshotModification.selectedColor;
                 this.screenshotModification.ctx.fillRect(this.screenshotModification.currX, this.screenshotModification.currY, 2, 2);
                 this.screenshotModification.ctx.closePath();
-                this.screenshotModification.dot_flag = false;
+                this.screenshotModification.dotFlag = false;
             }
         }
-        if (res == 'up' || res == "out") {
+        if (eventType == 'up' || eventType == 'out') {
             this.screenshotModification.flag = false;
         }
-        if (res == 'move') {
+        if (eventType == 'move') {
             if (this.screenshotModification.flag) {
                 this.screenshotModification.prevX = this.screenshotModification.currX;
                 this.screenshotModification.prevY = this.screenshotModification.currY;
