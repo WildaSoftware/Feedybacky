@@ -29,6 +29,7 @@
     "priorityHigh": "Wysoki",
     "modifyScreenshot": "Zaznacz miejsca",
     "save": "Zapisz",
-    "clear": "Wyczyść",
+    "clearMarkups": "Wyczyść zaznaczenia",
+    "restartScreen": "Zrób nowy zrzut ekranu",
     "working": "Praca w toku..."
 }

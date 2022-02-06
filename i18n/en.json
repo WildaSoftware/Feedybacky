@@ -29,6 +29,7 @@
     "priorityHigh": "High",
     "modifyScreenshot": "Mark places",
     "save": "Save",
-    "clear": "Clear",
+    "clearMarkups": "Clear markups",
+    "restartScreen": "Take new screenshot",
     "working": "Work in progress..."
 }

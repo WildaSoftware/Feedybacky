@@ -226,15 +226,20 @@ class Feedybacky {
                 document.getElementById('feedybacky-form-screenshot-modify').addEventListener('click', (e) => {
                     e.preventDefault();
                     
-                    let scrMdfyLabel = e.target.innerHTML;
-                    e.target.innerHTML = this.params.texts.working;
-                    
-                    this.getScreenshot().then((image) => {
-                        this.initializeDrawing(image);
-                        document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+                    if(!this.screenshotModification.canvas) {
+                        let scrMdfyLabel = e.target.innerHTML;
+                        e.target.innerHTML = this.params.texts.working;
 
-                        e.target.innerHTML = scrMdfyLabel;
-                    });
+                        this.getScreenshot().then((image) => {
+                            this.initializeDrawing(image);
+                            document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+    
+                            e.target.innerHTML = scrMdfyLabel;
+                        });
+                    }
+                    else {
+                        document.getElementById('feedybacky-screen-modification-modal').style.display = 'block';
+                    }
                 });
 
                 document.getElementById('feedybacky-screen-modification-modal-close').addEventListener('click', (e) => {
@@ -250,6 +255,28 @@ class Feedybacky {
                 document.getElementById('feedybacky-screen-modification-modal-clear').addEventListener('click', (e) => {
                     e.preventDefault();
                     this.clearScreenshotModification();
+                });
+
+                document.getElementById('feedybacky-screen-modification-modal-rescreen').addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    const saveBtn = document.getElementById('feedybacky-screen-modification-modal-save');
+                    const clearBtn = document.getElementById('feedybacky-screen-modification-modal-clear');
+                    const rescreenBtn = e.target;
+
+                    saveBtn.setAttribute('disabled', 'disabled');
+                    clearBtn.setAttribute('disabled', 'disabled');
+                    rescreenBtn.setAttribute('disabled', 'disabled');
+                    rescreenBtn.value = this.params.texts.working;
+
+                    this.getScreenshot().then((image) => {
+                        this.initializeDrawing(image);     
+                        
+                        saveBtn.removeAttribute('disabled');
+                        clearBtn.removeAttribute('disabled');
+                        rescreenBtn.removeAttribute('disabled');
+                        rescreenBtn.value = this.params.texts.restartScreen;
+                    });
                 });
 
                 let colorElements = document.getElementsByClassName('feedybacky-color-change');
@@ -538,7 +565,8 @@ class Feedybacky {
                                 </div>
                                 <div class="feedybacky-inputs-container">
                                     <input type="button" value="${this.params.texts.save}" id="feedybacky-screen-modification-modal-save">
-                                    <input type="button" value="${this.params.texts.clear}" id="feedybacky-screen-modification-modal-clear">
+                                    <input type="button" value="${this.params.texts.clearMarkups}" id="feedybacky-screen-modification-modal-clear">
+                                    <input type="button" value="${this.params.texts.restartScreen}" id="feedybacky-screen-modification-modal-rescreen">
                                 </div>
                             </div>
                         </div>                             
@@ -691,12 +719,12 @@ class Feedybacky {
 
         this.showAlertContainer(alertTypePending);
 
-        if(this.params.allowScreenshotModification && this.modifiedScreenshot) {
+        if(screenshotAllowed && this.params.allowScreenshotModification && this.modifiedScreenshot) {
             payload.image = this.modifiedScreenshot;
             this.handleBeforeSubmitCallback(payload);
             this.sendPostRequest(this.params.onSubmitUrl, payload);
         }
-        else if (screenshotAllowed) {
+        else if(screenshotAllowed) {
             this.getScreenshot().then((image) => {
                 payload.image = image;
                 this.handleBeforeSubmitCallback(payload);
@@ -846,6 +874,11 @@ class Feedybacky {
                     response.text().then(res => {
                         this.onSubmitUrlSuccess(response.status, res);
                     });
+                }
+
+                if(this.screenshotModification.canvas) {
+                    this.clearScreenshotModification();
+                    this.modifiedScreenshot = this.screenshotModification.canvas.toDataURL();
                 }
             } else {
                 this.showAlertContainer(alertTypeFailure, response.status);
@@ -1014,6 +1047,8 @@ class Feedybacky {
             this.findXYOnScreenshot('out', e)
         }, false);
     }
+
+
 
     findXYOnScreenshot(eventType, e) {
         if (eventType == 'down') {
