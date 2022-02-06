@@ -187,6 +187,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **personalDataAcceptedErrorNotChecked** - error message when user has not confirm information about personal data processing while the plugin is paired with the Feedybacky portal.
 * **category** - label before the category field.
 * **priority** - label before the priority field.
+* **modifyScreenshot** - label for the link for screenshot modification.
+* **working** - label displayed when work is in progress (during modified screenshot generation).
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
@@ -249,6 +251,8 @@ beforeSubmit: (payload) => {
 `allowedThemes` - optional parameter with array of possible themes which can be set at init of the form as well as in runtime. The default value is `['default', 'dark']`.
 
 `screenshotMethod` - optional parameter for setting a screenshot method. Default value is `html2canvas` and it uses HTML2Canvas library for taking a screenshot from whole page. There are situations in which this method would cause errors, simply does not work (for example on Safari) or the user should has choice of what window should be perpetuated. For such cases, `mediaDevice` method could be set what uses appropriate browser's media mechanism.
+
+`allowScreenshotModification` - optional parameter for enabling a screenshot modification tool. If it is on and the screenshot checkbox is checked, the appropriate button is visible and allows to precapture a screenshot of an actual screen and mark interesting places on it. Then the resulted screenshot will be enhanced by these drawings. Default value is `true`.
 
 ### Methods ###
 
