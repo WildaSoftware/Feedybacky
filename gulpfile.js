@@ -26,3 +26,6 @@ gulp.task('jsFile', function() {
 const tasks = ['cssFile', 'jsFile'];
 
 gulp.task('default', gulp.parallel(...tasks));
+gulp.task('watch', () => {
+	gulp.watch(['./css/feedybacky.scss', './js/feedybacky.js'], gulp.parallel(...tasks));
+});

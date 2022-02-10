@@ -1,7 +1,7 @@
 {
     "tooltip": "Zgłoś nam sugestię lub błąd!",
     "title": "Zgłoś uwagę!",
-    "description": "Wpisz opis zgłoszenia. Pamiętaj, aby zawrzeć jak najwięcej przydatnych informacji.",
+    "description": "Podaj opis zgłoszenia. Pamiętaj, aby zawrzeć jak najwięcej przydatnych informacji.",
     "expand": "Rozszerz",
     "additionalDataInformation": "System <b>automatycznie</b> doda do Twojego zgłoszenia potrzebne dane i informacje - zaznacz poniżej, które z nich chcesz dodać.",
     "screenshot": "Załącz zrzut ekranu aktualnie otwartej strony (dotyczy wyłącznie zawartości - pomija zakładki i ikony).",
@@ -31,5 +31,14 @@
     "save": "Zapisz",
     "clearMarkups": "Wyczyść zaznaczenia",
     "restartScreen": "Zrób nowy zrzut ekranu",
-    "working": "Praca w toku..."
+    "working": "Praca w toku...",
+    "messageTypeText": "Tekst",
+    "messageTypeVoice": "Głos",
+    "voiceRecord": "&#9673;",
+    "voiceStopRecord": "&#9632;",
+    "voicePlay": "&#9658;",
+    "voiceRecordTitle": "Nagraj głos",
+    "voiceStopRecordTitle": "Zatrzymaj nagrywanie",
+    "voicePlayTitle": "Odtwórz nagranie",
+    "descriptionErrorVoiceTooLong": "Twoje nagranie jest za długie!"
 }

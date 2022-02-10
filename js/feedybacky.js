@@ -41,6 +41,10 @@ const screenshotMethodHtml2Canvas = 'html2canvas';
 const screenshotMethodMediaDevice = 'mediaDevice';
 const allowedScreenshotMethods = [screenshotMethodHtml2Canvas, screenshotMethodMediaDevice];
 
+const messageTypeText = 'text';
+const messageTypeVoice = 'voice';
+const allowedMessageTypes = [messageTypeText, messageTypeVoice];
+
 class FeedybackyPayload {
 
     add(key, value) {
@@ -183,6 +187,14 @@ class Feedybacky {
             }
         }
 
+        this.params.availableMessageTypes = (this.params.availableMessageTypes && this.params.availableMessageTypes.length > 0)
+            ? this.params.availableMessageTypes.filter(value => allowedMessageTypes.includes(value))
+            : [messageTypeText];
+        this.params.activeMessageType = this.params.activeMessageType || this.params.availableMessageTypes[0];
+
+        this.messageAudio = null;
+        this.messageAudioLength = 0;
+
         this.loadMessages().then(() => {
             if (this.params.apiKey && this.params.projectSymbol && !this.params.onSubmitUrl) {
                 this.params.onSubmitUrl = feedybackyPortalEndpoint;
@@ -289,12 +301,15 @@ class Feedybacky {
                 }
             }
 
-            document.getElementById('feedybacky-form-description').addEventListener('keydown', e => {
-                if (e.ctrlKey && e.keyCode === 13) {
-                    e.preventDefault();
-                    document.getElementById('feedybacky-form-submit-button').click();
-                }
-            });
+            const descriptionInput = document.getElementById('feedybacky-form-description');
+            if(descriptionInput) {
+                descriptionInput.addEventListener('keydown', e => {
+                    if (e.ctrlKey && e.keyCode === 13) {
+                        e.preventDefault();
+                        document.getElementById('feedybacky-form-submit-button').click();
+                    }
+                });
+            }
 
             document.getElementById('feedybacky-alert-container').addEventListener('click', e => {
                 document.getElementById(e.srcElement.id).style.display = 'none';
@@ -315,6 +330,96 @@ class Feedybacky {
                     e.preventDefault();
                     document.getElementById('feedybacky-container-extended').className += ' expanded';
                     e.target.parentNode.removeChild(e.target);
+                });
+            }
+
+            const messageTabButtons = document.getElementsByClassName('feedybacky-message-type-button');
+            const messageTypes = document.getElementsByClassName('feedybacky-form-message-type');
+            
+            const messageTextTypeButton = document.getElementById('feedybacky-form-message-text');
+            if(messageTextTypeButton) {
+                messageTextTypeButton.addEventListener('click', e => {
+                    e.preventDefault();
+                    for(let i = 0; i < messageTabButtons.length; ++i) {
+                        messageTabButtons[i].classList = 'feedybacky-message-type-button';
+                    }
+                    for(let i = 0; i< messageTypes.length; ++i) {
+                        messageTypes[i].style.display = 'none';
+                    }
+
+                    e.target.classList = 'feedybacky-message-type-button feedybacky-button-active';
+                    document.getElementById('feedybacky-form-message-type-text').style.display = 'block';
+                    this.params.activeMessageType = messageTypeText;
+                });
+            }
+
+            const messageVoiceTypeButton = document.getElementById('feedybacky-form-message-voice');
+            if(messageVoiceTypeButton) {
+                messageVoiceTypeButton.addEventListener('click', e => {
+                    e.preventDefault();
+                    for(let i = 0; i < messageTabButtons.length; ++i) {
+                        messageTabButtons[i].classList = 'feedybacky-message-type-button';
+                    }
+                    for(let i = 0; i< messageTypes.length; ++i) {
+                        messageTypes[i].style.display = 'none';
+                    }
+
+                    e.target.classList = 'feedybacky-message-type-button feedybacky-button-active';
+                    document.getElementById('feedybacky-form-message-type-voice').style.display = 'block';
+                    this.params.activeMessageType = messageTypeVoice;
+                });
+            }
+
+            const messageVoiceRecordButton = document.getElementById('feedybacky-voice-record');
+            const messageVoiceStopButton = document.getElementById('feedybacky-voice-stop');
+            const messageVoicePlayButton = document.getElementById('feedybacky-voice-play');
+
+            let startTime = 0;
+
+            if(messageVoiceRecordButton && messageVoiceStopButton && messageVoicePlayButton) {
+                messageVoiceRecordButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        messageVoiceRecordButton.style.display = 'none';
+                        messageVoiceStopButton.style.display = 'inline';
+
+                        const mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.start();
+                        startTime = (new Date()).getTime();
+
+                        const audioChunks = [];
+                        mediaRecorder.addEventListener('dataavailable', event => {
+                            audioChunks.push(event.data);
+                        });
+
+                        mediaRecorder.addEventListener('stop', () => {
+                            messageVoiceRecordButton.style.display = 'inline';
+                            messageVoiceStopButton.style.display = 'none';
+                            messageVoicePlayButton.style.display = 'inline';
+
+                            const audioBlob = new Blob(audioChunks);
+                            
+                            let reader = new window.FileReader();
+                            reader.readAsDataURL(audioBlob); 
+                            reader.onloadend = () => {
+                                let base64 = reader.result;
+                                base64 = base64.split(',')[1];
+                                this.messageAudio = 'data:audio/wav;base64,' + base64;
+                            }
+                        });
+                        
+                        messageVoiceStopButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.messageAudioLength = (new Date()).getTime() - startTime;
+                            mediaRecorder.stop();
+                        });
+
+                        messageVoicePlayButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            (new Audio(this.messageAudio)).play();
+                        })
+                    });
                 });
             }
         });
@@ -419,13 +524,43 @@ class Feedybacky {
             </div>
         `;
 
-        let messageHtml = `
-            <textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true" class="${this.params.classes.message}"></textarea>
-            <div id="feedybacky-form-description-error-message" class="feedybacky-error-message ${this.params.classes.message}"></div>
-        `;
+        let messageTabHtml = '';
+        if(this.params.availableMessageTypes.length > 1) {
+            let tabs = '';
+            for(let i = 0; i < this.params.availableMessageTypes.length; ++i) {
+                const mt = this.params.availableMessageTypes[i];
+                tabs += (`<button id="feedybacky-form-message-${mt}" class="feedybacky-message-type-button ${(mt == this.params.activeMessageType) ? ' feedybacky-button-active' : ''}">${this.params.texts['messageType' + (mt.charAt(0).toUpperCase() + mt.slice(1))]}</button>`);
+            }
 
-        if (this.params.expandMessageLink) {
-            messageHtml += `<a href="#" id="feedybacky-form-description-expand" class="${this.params.classes.message}">${this.params.texts.expand}</a>`;
+            messageTabHtml = `
+                <div id="feedybacky-form-message-type-container">${tabs}</div>
+            `;
+        }
+
+        let messageHtml = '';
+        for(let i = 0; i < this.params.availableMessageTypes.length; ++i) {
+            const mt = this.params.availableMessageTypes[i];
+
+            messageHtml += `<div id="feedybacky-form-message-type-${mt}" class="feedybacky-form-message-type" style="display: ${mt == this.params.activeMessageType ? 'block' : 'none'}">`; 
+            if(mt == messageTypeText) {
+                messageHtml += `
+                    <textarea maxlength="1000" id="feedybacky-form-description" form="feedybacky-form" name="description" aria-required="true" class="${this.params.classes.message}"></textarea>
+                    <div id="feedybacky-form-description-error-message" class="feedybacky-error-message ${this.params.classes.message}"></div>
+                `;
+
+                if (this.params.expandMessageLink) {
+                    messageHtml += `<a href="#" id="feedybacky-form-description-expand" class="${this.params.classes.message}">${this.params.texts.expand}</a>`;
+                }
+            }
+            else if(mt == messageTypeVoice) {
+                messageHtml += `
+                    <button id="feedybacky-voice-record" class="feedybacky-voice-button ${this.params.classes.message}" title="${this.params.texts.voiceRecordTitle}">${this.params.texts.voiceRecord}</button>
+                    <button id="feedybacky-voice-stop" class="feedybacky-voice-button ${this.params.classes.message}" title="${this.params.texts.voiceStopRecordTitle}" style="display: none">${this.params.texts.voiceStopRecord}</button>
+                    <button id="feedybacky-voice-play" class="feedybacky-voice-button ${this.params.classes.message}" title="${this.params.texts.voicePlayTitle}" style="display: none">${this.params.texts.voicePlay}</button>
+                    <div id="feedybacky-form-description-error-message-voice" class="feedybacky-error-message ${this.params.classes.message}"></div>
+                `;
+            }
+            messageHtml += `</div>`;
         }
 
         let emailInputHtml = '';
@@ -514,7 +649,7 @@ class Feedybacky {
 
         const extendedParts = {};
         extendedParts[orderDescriptionPart] = `${descriptionHtml}`;
-        extendedParts[orderMessagePart] = `${messageHtml}`;
+        extendedParts[orderMessagePart] = `${messageTabHtml}${messageHtml}`;
         extendedParts[orderExplanationPart] = `${additionalDataInformationHtml}`;
         extendedParts[orderEmailPart] = `${emailInputHtml}`;
         extendedParts[orderCategoryPart] = `${categorySelectHtml}`;
@@ -601,8 +736,18 @@ class Feedybacky {
 
         let isValidated = true;
 
-        if (!descriptionInput.value) {
+        if (descriptionInput && (this.params.activeMessageType == messageTypeText) && !descriptionInput.value) {
             document.getElementById('feedybacky-form-description-error-message').innerText = this.params.texts.descriptionErrorEmpty;
+            isValidated = false;
+        }
+
+        if ((this.params.activeMessageType == messageTypeVoice) && !this.messageAudio) {
+            document.getElementById('feedybacky-form-description-error-message-voice').innerText = this.params.texts.descriptionErrorEmpty;
+            isValidated = false;
+        }
+
+        if ((this.params.activeMessageType == messageTypeVoice) && this.messageAudioLength > 10000) {
+            document.getElementById('feedybacky-form-description-error-message-voice').innerText = this.params.texts.descriptionErrorVoiceTooLong;
             isValidated = false;
         }
 
@@ -625,16 +770,24 @@ class Feedybacky {
     }
 
     prepareAndSendRequest() {
-        let descriptionInput = document.getElementById('feedybacky-form-description');
-        let emailInput = document.getElementById('feedybacky-form-email');
-        let categorySelect = document.getElementById('feedybacky-form-category');
-        let prioritySelect = document.getElementById('feedybacky-form-priority');
+        const descriptionInput = document.getElementById('feedybacky-form-description');
+        const messageAudioInput = this.messageAudio;
+        const emailInput = document.getElementById('feedybacky-form-email');
+        const categorySelect = document.getElementById('feedybacky-form-category');
+        const prioritySelect = document.getElementById('feedybacky-form-priority');
 
         let payload = new FeedybackyPayload();
-        payload.message = descriptionInput.value;
         payload.timestamp = new Date();
         payload.url = window.location.href;
         payload.errors = this.consoleErrors;
+        payload.messageType = this.params.activeMessageType;
+
+        if(this.params.activeMessageType == messageTypeText) {
+            payload.message = descriptionInput.value;
+        }
+        else if (this.params.activeMessageType == messageTypeVoice) {
+            payload.message = messageAudioInput;
+        }
 
         if (emailInput) {
             payload.email = emailInput.value;
@@ -660,11 +813,11 @@ class Feedybacky {
             payload.projectSymbol = this.params.projectSymbol;
         }
 
-        let screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
-        let metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
-        let historyAllowedInput = document.getElementById('feedybacky-form-history-allowed');
-        let termsAcceptedInput = document.getElementById('feedybacky-form-terms-accepted');
-        let personalDataAcceptedInput = document.getElementById('feedybacky-form-personal-data-accepted');
+        const screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');
+        const metadataAllowedInput = document.getElementById('feedybacky-form-metadata-allowed');
+        const historyAllowedInput = document.getElementById('feedybacky-form-history-allowed');
+        const termsAcceptedInput = document.getElementById('feedybacky-form-terms-accepted');
+        const personalDataAcceptedInput = document.getElementById('feedybacky-form-personal-data-accepted');
 
         const screenshotAllowed = screenshotAllowedInput ? screenshotAllowedInput.checked : (this.params.screenshotField == checkboxAutoEnableOption);
         const metadataAllowed = metadataAllowedInput ? metadataAllowedInput.checked : (this.params.metadataField == checkboxAutoEnableOption);
@@ -735,7 +888,9 @@ class Feedybacky {
             this.sendPostRequest(this.params.onSubmitUrl, payload);
         }
 
-        descriptionInput.value = '';
+        if(this.params.activeMessageType == messageTypeText && descriptionInput) {
+            descriptionInput.value = '';
+        }
     }
 
     getScreenshotMethodHtml2Canvas() {
@@ -975,7 +1130,11 @@ class Feedybacky {
     showExtendedContainer() {
         this.minifiedContainer.style.display = 'none';
         this.extendedContainer.style.display = 'block';
-        document.getElementById('feedybacky-form-description').focus();
+        
+        const descriptionInput = document.getElementById('feedybacky-form-description');
+        if(descriptionInput) {
+            descriptionInput.focus();
+        }
     }
 
     showAlertContainer(alertType, status) {

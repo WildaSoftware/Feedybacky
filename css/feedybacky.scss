@@ -345,3 +345,20 @@ $colorGrey: #aaaaaa;
 		}
 	}
 }
+
+#feedybacky-form-message-type-container {
+	margin-top: 5px;
+}
+
+.feedybacky-button-active {
+	background-color: $colorGrey;
+}
+
+.feedybacky-voice-button {
+	display: inline;
+	font-size: 1.2rem;
+}
+
+.feedybacky-message-type-button {
+	width: 50%;
+}
