@@ -3,12 +3,12 @@
 const csso = require('gulp-csso');
 const gulp = require('gulp');
 const rename = require('gulp-rename');
-const minify = require('gulp-minify');
+const terser = require('gulp-terser');
 const sass = require('gulp-sass')(require('sass'));
 
 gulp.task('cssFile', function() {
 	return gulp.src('./css/feedybacky.scss')
-		.pipe(sass().on('error', sass.logError))
+		.pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
 		.pipe(csso())
 		.pipe(rename('feedybacky.min.css'))
 		.pipe(gulp.dest('./css'))
@@ -16,10 +16,8 @@ gulp.task('cssFile', function() {
 
 gulp.task('jsFile', function() { 
 	return gulp.src('./js/feedybacky.js')
-		.pipe(minify({
-			noSource: true,
-			ext: '.min.js'
-		}))
+		.pipe(rename('feedybacky.min.js'))
+		.pipe(terser())
 		.pipe(gulp.dest('./js'))
 });
 

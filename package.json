@@ -16,9 +16,9 @@
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-csso": "^3.0.1",
-    "gulp-minify": "^3.1.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^5.0.0",
+    "gulp-terser": "^2.1.0",
     "sass": "^1.37.5"
   }
 }
