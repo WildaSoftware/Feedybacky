@@ -45,6 +45,8 @@ const messageTypeText = 'text';
 const messageTypeVoice = 'voice';
 const allowedMessageTypes = [messageTypeText, messageTypeVoice];
 
+const messageAudioMaxLength = 10000;
+
 class FeedybackyPayload {
 
     add(key, value) {
@@ -746,8 +748,8 @@ class Feedybacky {
             isValidated = false;
         }
 
-        if ((this.params.activeMessageType == messageTypeVoice) && this.messageAudioLength > 10000) {
-            document.getElementById('feedybacky-form-description-error-message-voice').innerText = this.params.texts.descriptionErrorVoiceTooLong;
+        if ((this.params.activeMessageType == messageTypeVoice) && this.messageAudioLength > messageAudioMaxLength) {
+            document.getElementById('feedybacky-form-description-error-message-voice').innerText = this.params.texts.descriptionErrorVoiceTooLong + (messageAudioMaxLength / 1000);
             isValidated = false;
         }
 

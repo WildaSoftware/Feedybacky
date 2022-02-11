@@ -1,12 +1,18 @@
+Version 2.3
+===========
+
+1. Modifying a screenshot and create markups on it is possible.
+2. Message types introduced - voice is a new possibility to provide a request's message.
+
 Version 2.2 (2021-08-23)
 ========================
 
-1. Setting themes and predefined dark theme
-2. Additional metadata information: cookieEnabled, browserLanguage, referrer, pixelRatio, offsetX, offsetY
-3. Selecting a category
-4. Selecting a priority (among high and medium)
-5. Selecting a screenshot method (among default html2canvas and mediaSource)
-6. Minor fixes: error 403 message, changes in labels
+1. Setting themes and predefined dark theme.
+2. Additional metadata information: cookieEnabled, browserLanguage, referrer, pixelRatio, offsetX, offsetY.
+3. Selecting a category.
+4. Selecting a priority (among high and medium).
+5. Selecting a screenshot method (among default html2canvas and mediaSource).
+6. Minor fixes: error 403 message, changes in labels.
 
 Version 2.1 (2021-07-01)
 ========================

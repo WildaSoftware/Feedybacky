@@ -54,11 +54,7 @@
 		<script type="text/javascript" src="../js/feedybacky.min.js"></script>
 		<script>
 			var feedybacky = new Feedybacky('feedybacky-container', {
-				language: 'pl',
-				apiKey: 'your Feedybacky API key',
-				projectSymbol: 'your Feedybacky project symbol',
-				termsUrl: 'https://myimaginerysite.wildasoftware.pl/terms',
-				privacyPolicyUrl: 'https://myimaginerysite.wildasoftware.pl/privacy-policy',
+				onSubmitUrl: 'backend/api.php',
                 availableMessageTypes: ['text', 'voice'],
                 activeMessageType: 'text',
 			});

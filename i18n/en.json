@@ -1,7 +1,7 @@
 {
     "tooltip": "Report a suggestion or error to us!",
     "title": "Report suggestion!",
-    "description": "Enter a description for the request. Remember to include as much useful information as possible.",
+    "description": "Provide a description for the request. Remember to include as much useful information as possible.",
     "expand": "Expand",
     "additionalDataInformation": "The system will <b>automatically</b> add the necessary data and information to your request - below you can select which you want to add.",
     "screenshot": "Attach a screenshot of the currently opened page (concerns content only - ignores browser shortcuts and icons).",
@@ -31,5 +31,14 @@
     "save": "Save",
     "clearMarkups": "Clear markups",
     "restartScreen": "Take new screenshot",
-    "working": "Work in progress..."
+    "working": "Work in progress...",
+    "messageTypeText": "Text",
+    "messageTypeVoice": "Voice",
+    "voiceRecord": "&#9673;",
+    "voiceStopRecord": "&#9632;",
+    "voicePlay": "&#9658;",
+    "voiceRecordTitle": "Record voice",
+    "voiceStopRecordTitle": "Stop recording",
+    "voicePlayTitle": "Play recording",
+    "descriptionErrorVoiceTooLong": "Your recording is too long! Maximum length in seconds: "
 }

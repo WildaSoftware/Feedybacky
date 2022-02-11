@@ -40,5 +40,5 @@
     "voiceRecordTitle": "Nagraj głos",
     "voiceStopRecordTitle": "Zatrzymaj nagrywanie",
     "voicePlayTitle": "Odtwórz nagranie",
-    "descriptionErrorVoiceTooLong": "Twoje nagranie jest za długie!"
+    "descriptionErrorVoiceTooLong": "Twoje nagranie jest za długie! Maksymalna długość w sekundach: "
 }

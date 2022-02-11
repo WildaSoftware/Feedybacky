@@ -124,7 +124,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 
 `onSubmitUrl` - URL with POST web service to receive information about a sent request. The resulted JSON object can consist of following fields:
 
-* **message** - text provided by the user.
+* **message** - text or recording provided by the user.
+* **messageType** - type of message (`text` or `voice`).
 * **timestamp** - date and time of the request creation.
 * **url** - URL on which the request is sent.
 * **errors** - array with error messages from JavaScripts's console.
@@ -189,6 +190,15 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **priority** - label before the priority field.
 * **modifyScreenshot** - label for the link for screenshot modification.
 * **working** - label displayed when work is in progress (during modified screenshot generation).
+* **messageTypeText** - label for text message type.
+* **messageTypeVoice** - label for voice message type.
+* **voiceRecord** - label for record start button (for voice message type).
+* **voiceStopRecord** - label for record stop button (for voice message type).
+* **voicePlay** - label for record play button (for voice message type).
+* **voiceRecordTitle** - label for record start button title (for voice message type).
+* **voiceStopRecordTitle** - label for record stop button title (for voice message type).
+* **voicePlayTitle** - label for record play button title (for voice message type).
+* **descriptionErrorVoiceTooLong** - error message when recording for voice message type is too long.
 
 `extraInfo` - optional callback function with no parameter which only returns JSON object. Keys and values of the object are merged with standard request information (next to "message", "timestamp" etc.). It can be used to pass extra data specific to the web application, such as user ID.
 
@@ -253,6 +263,10 @@ beforeSubmit: (payload) => {
 `screenshotMethod` - optional parameter for setting a screenshot method. Default value is `html2canvas` and it uses HTML2Canvas library for taking a screenshot from whole page. There are situations in which this method would cause errors, simply does not work (for example on Safari) or the user should has choice of what window should be perpetuated. For such cases, `mediaDevice` method could be set what uses appropriate browser's media mechanism.
 
 `allowScreenshotModification` - optional parameter for enabling a screenshot modification tool. If it is on and the screenshot checkbox is checked, the appropriate button is visible and allows to precapture a screenshot of an actual screen and mark interesting places on it. Then the resulted screenshot will be enhanced by these drawings. Default value is `true`.
+
+`availableMessageTypes` - optional parameter with array of allowed message types for the requesting user. The message is not limited to text - available options are `text` and `voice`. There is possibility to select all of them or just some. Default value is `['text']`. The maximum length for `voice` message is set to 10 seconds.
+
+`activeMessageType` - optional parameter for selecting a first, default message type. It has to be present in `availableMessageTypes` array. Otherwise or by default the value is set to first element of `availableMessageTypes` array (mostly `text`).
 
 ### Methods ###
 
