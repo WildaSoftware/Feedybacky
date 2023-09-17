@@ -1075,8 +1075,17 @@ class Feedybacky {
                     }
 
                     if (e.target.value) {
-                        historyEntry['value'] = e.target.value;
+						if(e.target.getAttribute('type') !== 'password') {
+							historyEntry['value'] = e.target.value;
+						}
+						else {
+							historyEntry['value'] = '***';
+						}
                     }
+					
+					if (e.target.getAttribute('type')) {
+						historyEntry['type'] = e.target.getAttribute('type');
+					}
 
                     this.eventHistory.push(historyEntry);
                 }

@@ -1,3 +1,8 @@
+Version 2.3.1 (2023-09-17)
+========================
+
+Security fix - hiding values of inputs with type "password" in the history field (there are replaced for "***").
+
 Version 2.3 (2022-02-12)
 ========================
 
